@@ -24,18 +24,14 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-      target: development
+      dockerfile: Dockerfile.dev
     container_name: dashboard-backend-dev
     environment:
       NODE_ENV: development
-      DATABASE_HOST: mysql
-      DATABASE_PORT: 3306
-      DATABASE_USERNAME: dashboard_user
-      DATABASE_PASSWORD: dashboard_pass123
-      DATABASE_NAME: dashboard_orders
+      DATABASE_URL: "mysql://dashboard_user:dashboard_pass123@mysql:3306/dashboard_orders"
       JWT_SECRET: dev-jwt-secret-key-change-in-production
-      API_PORT: 3001
+      PORT: 3001
+      FRONTEND_URL: "http://localhost:3000"
       EXTERNAL_API_URL: ${EXTERNAL_API_URL:-http://localhost:8000}
     ports:
       - "3001:3001"
@@ -47,7 +43,6 @@ services:
     networks:
       - dashboard-network
     restart: unless-stopped
-    command: npm run start:dev
 
   # Frontend Next.js
   frontend:

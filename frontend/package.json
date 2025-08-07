@@ -1,0 +1,36 @@
+{
+  "name": "dashboard-order-frontend",
+  "version": "1.0.0",
+  "description": "Frontend da aplicação de gerenciamento de ordens de serviço",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "13.5.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "axios": "^1.5.0",
+    "recharts": "^2.8.0",
+    "react-hook-form": "^7.45.0",
+    "react-query": "^3.39.3",
+    "js-cookie": "^3.0.5",
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.290.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/js-cookie": "^3.0.4",
+    "eslint": "^8.48.0",
+    "eslint-config-next": "13.5.6",
+    "typescript": "^5.1.6",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.29"
+  }
+}

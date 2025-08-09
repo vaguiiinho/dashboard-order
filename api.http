@@ -1,5 +1,5 @@
 
-#Por assundo
+#O.S Por assundo
 ###
 POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
 Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
@@ -10,8 +10,23 @@ Content-Type: application/json
     "grid_param": "[{\"TB\":\"su_oss_chamado.id_assunto\", \"OP\" : \"IN\", \"P\" : \"1056,712\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
 }
 
+#Retorno
+# {
+#   "total": 25,
+#   "registros": [
+#     {
+#       "id": "1019716",
+#       "id_cliente": "36615",
+#       "id_assunto": "1056",
+#       "setor": "1",
+#       "id_cidade": "4745",
+#       "id_tecnico": "3521"
+#     }
+#   ]
+# }
 
-#Por setor
+
+#O.S Por setor
 ###
 POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
 Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
@@ -23,8 +38,22 @@ Content-Type: application/json
 
 }
 
+#Retorno
+# {
+#   "total": 127,
+#   "registros": [
+#     {
+#       "id": "1019804",
+#       "id_assunto": "1052",
+#       "setor": "1",
+#       "id_cidade": "4660",
+#       "id_tecnico": "20"
+#     }
+#   ]
+# }
 
-#Por colaborador
+
+#O.S Por colaborador
 ###
 POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
 Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
@@ -35,8 +64,22 @@ Content-Type: application/json
     "grid_param": "[{\"TB\":\"su_oss_chamado.id_tecnico\", \"OP\" : \"=\", \"P\" : \"3570\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
 }
 
+#Retorno
+# {
+#   "total": 31,
+#   "registros": [
+#     {
+#       "id": "1019474",
+#       "id_cliente": "38056",
+#       "id_assunto": "1056",
+#       "setor": "1",
+#       "id_cidade": "4745",
+#       "id_tecnico": "3570",
+#     }
+#   ]
+# }
 
-#Por cidade
+#O.S Por cidade
 ###
 POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
 Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
@@ -47,3 +90,46 @@ Content-Type: application/json
   
     "grid_param": "[{\"TB\":\"su_oss_chamado.id_cidade\", \"OP\" : \"=\", \"P\" : \"4745\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
 }
+
+#Retorno
+# {
+#   "total": 208,
+#   "registros": [
+#     {
+#       "id": "1019840",
+#       "id_cliente": "36328",
+#       "id_assunto": "14",
+#       "setor": "5",
+#       "id_cidade": "4745",
+#       "id_tecnico": "3588"
+#     }
+#   ]
+# }
+
+
+
+# Assundo por ID
+###
+POST https://crm.tubaron.net/webservice/v1/su_oss_assunto
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
+ixcsoft:listar
+Content-Type: application/json
+
+{
+  
+    "grid_param": "[{\"TB\":\"su_oss_assunto.id\", \"OP\" : \"IN\", \"P\" : \"14,1056\"},{\"TB\":\"su_oss_assunto.ativo\", \"OP\" : \"=\", \"P\" : \"S\"}]"
+}
+
+#Retorno
+# {
+#   "page": "1",
+#   "total": "2",
+#   "registros": [
+#     {
+#       "id": "1056",
+#       "assunto": "Visita T\u00e9cnica - Sem Conex\u00e3o Loss"
+#     }
+#   ]
+# }
+
+

@@ -1,0 +1,49 @@
+
+#Por assundo
+###
+POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
+ixcsoft:listar
+Content-Type: application/json
+
+{
+    "grid_param": "[{\"TB\":\"su_oss_chamado.id_assunto\", \"OP\" : \"IN\", \"P\" : \"1056,712\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
+}
+
+
+#Por setor
+###
+POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
+ixcsoft:listar
+Content-Type: application/json
+
+{
+    "grid_param": "[{\"TB\":\"su_oss_chamado.setor\", \"OP\" : \"=\", \"P\" : \"1\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
+
+}
+
+
+#Por colaborador
+###
+POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
+ixcsoft:listar
+Content-Type: application/json
+
+{
+    "grid_param": "[{\"TB\":\"su_oss_chamado.id_tecnico\", \"OP\" : \"=\", \"P\" : \"3570\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
+}
+
+
+#Por cidade
+###
+POST https://crm.tubaron.net/webservice/v1/su_oss_chamado
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
+ixcsoft:listar
+Content-Type: application/json
+
+{
+  
+    "grid_param": "[{\"TB\":\"su_oss_chamado.id_cidade\", \"OP\" : \"=\", \"P\" : \"4745\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
+}

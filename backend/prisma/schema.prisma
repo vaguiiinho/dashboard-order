@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,150 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Usuario {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(USER)
-  department String?
-  city      String?
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  senha     String
+  grupoId   Int
+  grupo     Grupo    @relation(fields: [grupoId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Relacionamentos para futuras expansões
-  createdOrders ServiceOrder[] @relation("CreatedBy")
-  assignedOrders ServiceOrder[] @relation("AssignedTo")
-
-  @@map("users")
+  @@map("usuarios")
 }
 
-enum Role {
-  ADMIN
-  MANAGER
-  SUPERVISOR
-  USER
-}
+model Grupo {
+  id        Int       @id @default(autoincrement())
+  nome      String    @unique // Ex: "gerente", "supervisor", "colaborador"
+  usuarios  Usuario[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-// Modelos preparados para futuras expansões
-model Category {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  color       String   @default("#007bff")
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  orders ServiceOrder[]
-
-  @@map("categories")
-}
-
-model Department {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String?
-  managerId   Int?     @map("manager_id")
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  manager User? @relation(fields: [managerId], references: [id])
-  orders  ServiceOrder[]
-
-  @@map("departments")
-}
-
-model Structure {
-  id           Int         @id @default(autoincrement())
-  name         String
-  type         String?
-  location     String?
-  departmentId Int?        @map("department_id")
-  active       Boolean     @default(true)
-  createdAt    DateTime    @default(now()) @map("created_at")
-  updatedAt    DateTime    @updatedAt @map("updated_at")
-
-  department Department? @relation(fields: [departmentId], references: [id])
-  orders     ServiceOrder[]
-
-  @@map("structures")
-}
-
-model ServiceOrder {
-  id             Int            @id @default(autoincrement())
-  externalId     String?        @unique @map("external_id")
-  title          String
-  description    String?        @db.Text
-  status         OrderStatus    @default(PENDING)
-  priority       OrderPriority  @default(MEDIUM)
-  categoryId     Int?           @map("category_id")
-  departmentId   Int?           @map("department_id")
-  structureId    Int?           @map("structure_id")
-  assignedTo     Int?           @map("assigned_to")
-  createdBy      Int?           @map("created_by")
-  city           String?
-  estimatedHours Float?         @map("estimated_hours")
-  actualHours    Float?         @map("actual_hours")
-  completionDate DateTime?      @map("completion_date")
-  createdAt      DateTime       @default(now()) @map("created_at")
-  updatedAt      DateTime       @updatedAt @map("updated_at")
-
-  category    Category?   @relation(fields: [categoryId], references: [id])
-  department  Department? @relation(fields: [departmentId], references: [id])
-  structure   Structure?  @relation(fields: [structureId], references: [id])
-  assignee    User?       @relation("AssignedTo", fields: [assignedTo], references: [id])
-  creator     User?       @relation("CreatedBy", fields: [createdBy], references: [id])
-
-  comments    ServiceOrderComment[]
-  attachments ServiceOrderAttachment[]
-
-  @@map("service_orders")
-}
-
-enum OrderStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-}
-
-enum OrderPriority {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
-}
-
-model ServiceOrderComment {
-  id             Int      @id @default(autoincrement())
-  serviceOrderId Int      @map("service_order_id")
-  userId         Int      @map("user_id")
-  comment        String   @db.Text
-  isInternal     Boolean  @default(false) @map("is_internal")
-  createdAt      DateTime @default(now()) @map("created_at")
-
-  serviceOrder ServiceOrder @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
-  user         User         @relation(fields: [userId], references: [id])
-
-  @@map("service_order_comments")
-}
-
-model ServiceOrderAttachment {
-  id             Int      @id @default(autoincrement())
-  serviceOrderId Int      @map("service_order_id")
-  filename       String
-  originalName   String   @map("original_name")
-  filePath       String   @map("file_path")
-  fileSize       Int?     @map("file_size")
-  mimeType       String?  @map("mime_type")
-  uploadedBy     Int      @map("uploaded_by")
-  createdAt      DateTime @default(now()) @map("created_at")
-
-  serviceOrder ServiceOrder @relation(fields: [serviceOrderId], references: [id], onDelete: Cascade)
-  uploader     User         @relation(fields: [uploadedBy], references: [id])
-
-  @@map("service_order_attachments")
+  @@map("grupos")
 }

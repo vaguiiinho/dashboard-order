@@ -1,309 +1,193 @@
 # Dashboard de Ordens de Serviço
 
-Sistema completo para gerenciamento de ordens de serviço com dashboards interativos e integração com APIs externas.
+Sistema de gerenciamento de ordens de serviço desenvolvido com arquitetura separada entre frontend e backend.
 
-## 🏗️ Arquitetura
+## 📋 Arquitetura
 
-- **Frontend**: Next.js 14 + TypeScript + Recharts
-- **Backend**: NestJS + TypeORM + MySQL
-- **Database**: MySQL 8.0
-- **Proxy**: Nginx (produção)
-- **Cache**: Redis (opcional)
-- **Containerização**: Docker + Docker Compose
+- **Frontend:** Next.js 15 com TypeScript, Tailwind CSS e App Router
+- **Backend:** NestJS com TypeScript, Prisma ORM e MySQL
+- **Autenticação:** JWT com guards e estratégias Passport
+- **Arquitetura:** Clean Architecture com Use Cases e Repositories
+
+## 🚀 Como executar o projeto
+
+### Opção 1: Setup Automático (Recomendado)
+
+```bash
+# Executar o script de setup automático
+./setup.sh
+```
+
+Este script irá:
+- Configurar o banco MySQL via Docker
+- Instalar dependências
+- Executar migrações
+- Popular banco com dados iniciais
+
+### Opção 2: Setup Manual
+
+#### Pré-requisitos
+
+- Node.js 20+ 
+- MySQL 8+ (ou Docker)
+- npm ou yarn
+
+#### 1. Backend (NestJS)
+
+```bash
+cd backend
+
+# Instalar dependências
+npm install
+
+# Configurar banco de dados
+# Certifique-se de que o MySQL está rodando e crie o banco:
+# CREATE DATABASE dashboard_order_db;
+
+# Copiar e configurar variáveis de ambiente
+cp .env.example .env
+# Edite o arquivo .env com suas configurações de banco
+
+# Executar migrações do Prisma
+npx prisma migrate dev --name init
+
+# Executar seed do banco (criar grupos e usuário admin)
+npm run db:seed
+
+# Iniciar o servidor de desenvolvimento
+npm run start:dev
+```
+
+#### 2. Frontend (Next.js)
+
+```bash
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Iniciar o servidor de desenvolvimento
+npm run dev
+```
+
+### Opção 3: Docker (Produção)
+
+```bash
+# Executar toda a aplicação com Docker
+docker-compose up -d
+
+# Para parar
+docker-compose down
+```
+
+## 📍 URLs de Acesso
+
+- **Frontend:** http://localhost:3000
+- **Backend:** http://localhost:3001
+- **MySQL:** localhost:3306
+
+## 🔐 Credenciais de Teste
+
+Após executar o seed do banco, use estas credenciais para fazer login:
+
+- **Email:** admin@exemplo.com
+- **Senha:** admin123
 
 ## 📁 Estrutura do Projeto
 
 ```
 dashboard_order/
-├── frontend/              # Aplicação Next.js
-│   ├── Dockerfile
+├── backend/                    # API NestJS
+│   ├── src/
+│   │   ├── modules/
+│   │   │   ├── auth/          # Módulo de autenticação
+│   │   │   └── usuarios/      # Módulo de usuários
+│   │   ├── config/            # Configurações (Prisma, etc.)
+│   │   └── common/            # Utilitários compartilhados
+│   ├── prisma/
+│   │   ├── schema.prisma      # Schema do banco de dados
+│   │   └── seed.ts           # Dados iniciais
 │   └── package.json
-├── backend/               # API NestJS
-│   ├── Dockerfile
+├── frontend/                   # Aplicação Next.js
+│   ├── src/
+│   │   ├── app/              # App Router do Next.js
+│   │   ├── components/       # Componentes React
+│   │   ├── context/          # Context API (Auth)
+│   │   ├── hooks/            # Hooks customizados
+│   │   ├── services/         # Serviços de API
+│   │   ├── types/            # Tipos TypeScript
+│   │   └── lib/              # Utilitários
 │   └── package.json
-├── database/              # Configurações do banco
-│   └── init/             # Scripts de inicialização
-├── nginx/                 # Configurações do Nginx
-│   ├── nginx.conf
-│   └── conf.d/
-├── scripts/               # Scripts de automação
-│   ├── start-dev.sh      # Iniciar desenvolvimento
-│   ├── stop-dev.sh       # Parar desenvolvimento
-│   ├── start-prod.sh     # Iniciar produção
-│   ├── stop-prod.sh      # Parar produção
-│   └── backup-db.sh      # Backup do banco
-├── docker-compose.dev.yml # Docker Compose desenvolvimento
-├── docker-compose.prod.yml # Docker Compose produção
-└── env.example           # Exemplo de variáveis de ambiente
+└── docs/
+    └── plan_action.md         # Plano de ação do projeto
 ```
 
-## 🚀 Início Rápido
+## 🛠 Funcionalidades Implementadas
 
-### Pré-requisitos
+### ✅ Concluído
 
-- Docker 20.10+
-- Docker Compose 2.0+
-- Git
+- [x] Configuração inicial do projeto (frontend + backend)
+- [x] Backend NestJS com TypeScript
+- [x] Configuração Prisma + MySQL
+- [x] Módulo de autenticação com JWT
+- [x] Módulo de usuários com CRUD
+- [x] Clean Architecture (Use Cases + Repositories)
+- [x] Frontend Next.js com TypeScript
+- [x] Sistema de autenticação no frontend
+- [x] Proteção de rotas
+- [x] Seed inicial com grupos e usuário admin
 
-### Desenvolvimento
+### 🔄 Em Desenvolvimento
 
-1. **Clone o repositório**:
-   ```bash
-   git clone <repository-url>
-   cd dashboard_order
-   ```
+- [ ] Página de gerenciamento de usuários
+- [ ] Dashboards com gráficos interativos
+- [ ] Sistema de filtros
+- [ ] Dockerização da aplicação
+- [ ] Testes unitários e de integração
 
-2. **Configure as variáveis de ambiente**:
-   ```bash
-   cp env.example .env
-   # Edite o arquivo .env com suas configurações
-   ```
+## 🎯 Próximos Passos
 
-3. **Inicie o ambiente de desenvolvimento**:
-   ```bash
-   ./scripts/start-dev.sh
-   ```
+1. **Implementar CRUD de usuários** no frontend
+2. **Criar dashboards** com gráficos mockados (Recharts)
+3. **Adicionar sistema de filtros** dinâmicos
+4. **Dockerizar** a aplicação
+5. **Implementar testes** unitários e de integração
+6. **Deploy** em ambiente on-premise
 
-4. **Acesse as aplicações**:
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
-   - phpMyAdmin: http://localhost:8080
-   - MySQL: localhost:3306
-
-### Produção
-
-1. **Configure as variáveis de ambiente**:
-   ```bash
-   cp env.example .env
-   # IMPORTANTE: Altere todas as senhas padrão!
-   nano .env
-   ```
-
-2. **Inicie o ambiente de produção**:
-   ```bash
-   ./scripts/start-prod.sh
-   ```
-
-3. **Acesse a aplicação**:
-   - Aplicação: http://localhost
-   - Health Check: http://localhost/health
-
-## ⚙️ Configuração
-
-### Variáveis de Ambiente
-
-Principais variáveis no arquivo `.env`:
-
-```bash
-# Database
-MYSQL_ROOT_PASSWORD=sua-senha-root-segura
-MYSQL_DATABASE=dashboard_orders
-MYSQL_USER=dashboard_user
-MYSQL_PASSWORD=sua-senha-usuario-segura
-
-# Backend
-JWT_SECRET=sua-chave-jwt-super-secreta-min-32-chars
-EXTERNAL_API_URL=https://api.servico-externo.com
-
-# Frontend
-NEXT_PUBLIC_API_URL=http://localhost/api
-
-# Redis (opcional)
-REDIS_PASSWORD=sua-senha-redis-segura
-```
-
-### Usuário Padrão
-
-- **Email**: admin@dashboard.com
-- **Senha**: admin123
-- **Role**: admin
-
-> ⚠️ **IMPORTANTE**: Altere a senha padrão após o primeiro login!
-
-## 🐳 Docker
-
-### Imagens Disponíveis
-
-O projeto utiliza builds multi-stage para otimização:
-
-#### Frontend
-- **development**: Imagem para desenvolvimento com hot reload
-- **production**: Imagem otimizada para produção
-
-#### Backend
-- **development**: Imagem para desenvolvimento com watch mode
-- **production**: Imagem otimizada para produção
-
-### Comandos Docker Úteis
-
-```bash
-# Ver logs em tempo real
-docker-compose -f docker-compose.dev.yml logs -f
-
-# Reconstruir containers
-docker-compose -f docker-compose.dev.yml up --build
-
-# Limpar volumes (apaga dados)
-docker-compose -f docker-compose.dev.yml down -v
-
-# Executar comandos no container
-docker-compose -f docker-compose.dev.yml exec backend npm run migration:run
-```
-
-## 📊 Funcionalidades
-
-### Dashboards
-- Gráficos por assunto
-- Gráficos por setor
-- Gráficos por colaborador
-- Gráficos por cidade
-- Gráficos por estrutura
-- Filtros dinâmicos
-
-### Sistema de Ordens
-- CRUD completo de ordens de serviço
-- Status tracking
-- Anexos de arquivos
-- Comentários e histórico
-- Integração com API externa
+## 📊 Endpoints da API
 
 ### Autenticação
-- Login JWT
-- Controle de roles (admin, manager, supervisor, user)
-- Proteção de rotas
-- Sessão persistente
+- `POST /auth/login` - Login de usuário
 
-## 🔒 Segurança
+### Usuários  
+- `GET /usuarios` - Listar usuários
+- `GET /usuarios/:id` - Buscar usuário por ID
+- `POST /usuarios` - Criar usuário
+- `PATCH /usuarios/:id` - Atualizar usuário
+- `DELETE /usuarios/:id` - Remover usuário
 
-### Nginx (Produção)
-- Rate limiting
-- Headers de segurança
-- Compressão GZIP
-- Cache de assets estáticos
+## 🔧 Scripts Disponíveis
 
 ### Backend
-- Validação de entrada
-- Sanitização de dados
-- JWT com refresh tokens
-- CORS configurado
+- `npm run start:dev` - Servidor de desenvolvimento
+- `npm run build` - Build para produção
+- `npm run db:seed` - Executar seed do banco
+- `npm run test` - Executar testes
 
-### Database
-- Usuário não-root
-- Senhas seguras
-- Backup automatizado
-- Índices otimizados
-
-## 🔧 Manutenção
-
-### Backup do Banco
-
-```bash
-# Backup manual
-./scripts/backup-db.sh
-
-# Os backups são salvos em: ./database/backup/
-```
-
-### Monitoramento
-
-```bash
-# Status dos containers
-docker-compose -f docker-compose.prod.yml ps
-
-# Health check
-curl http://localhost/health
-
-# Logs de erro
-docker-compose -f docker-compose.prod.yml logs nginx
-```
-
-### Atualizações
-
-```bash
-# Parar aplicação
-./scripts/stop-prod.sh
-
-# Fazer backup
-./scripts/backup-db.sh
-
-# Atualizar código
-git pull
-
-# Reconstruir e iniciar
-./scripts/start-prod.sh
-```
-
-## 🐛 Solução de Problemas
-
-### Problemas Comuns
-
-1. **Erro de conexão com o banco**:
-   - Verifique se o MySQL está rodando
-   - Confirme as credenciais no `.env`
-
-2. **Frontend não carrega**:
-   - Verifique os logs: `docker-compose logs frontend`
-   - Confirme se o backend está respondendo
-
-3. **Erro 502 Bad Gateway**:
-   - Verifique se os containers backend/frontend estão rodando
-   - Verifique os logs do Nginx
-
-### Debug
-
-```bash
-# Logs detalhados
-docker-compose -f docker-compose.dev.yml logs -f --tail=100
-
-# Entrar no container para debug
-docker-compose -f docker-compose.dev.yml exec backend bash
-docker-compose -f docker-compose.dev.yml exec frontend sh
-
-# Verificar recursos do sistema
-docker stats
-```
-
-## 📝 Desenvolvimento
-
-### Estrutura do Frontend (Next.js)
-
-```
-frontend/src/
-├── components/        # Componentes reutilizáveis
-├── pages/            # Páginas da aplicação
-├── services/         # Serviços de API
-├── hooks/            # Custom hooks
-├── utils/            # Utilitários
-└── styles/           # Estilos globais
-```
-
-### Estrutura do Backend (NestJS)
-
-```
-backend/src/
-├── auth/             # Módulo de autenticação
-├── users/            # Módulo de usuários
-├── orders/           # Módulo de ordens
-├── dashboard/        # Módulo de dashboard
-├── common/           # Utilitários comuns
-└── main.ts           # Entry point
-```
+### Frontend
+- `npm run dev` - Servidor de desenvolvimento
+- `npm run build` - Build para produção
+- `npm run lint` - Linter ESLint
 
 ## 🤝 Contribuição
 
-1. Fork o projeto
-2. Crie uma branch: `git checkout -b feature/nova-funcionalidade`
-3. Commit: `git commit -m 'Adiciona nova funcionalidade'`
-4. Push: `git push origin feature/nova-funcionalidade`
-5. Abra um Pull Request
+Este projeto segue o plano de ação documentado em `docs/plan_action.md`. Para contribuir:
 
-## 📄 Licença
+1. Consulte o plano de ação
+2. Siga a arquitetura Clean estabelecida
+3. Mantenha a separação entre frontend e backend
+4. Documente alterações importantes
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+## 📝 Licença
 
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-- Abra uma issue no GitHub
-- Consulte a documentação técnica em `/docs`
-- Contate a equipe de desenvolvimento
+Este projeto é privado e destinado ao aprendizado e desenvolvimento.

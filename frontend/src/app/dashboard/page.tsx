@@ -1,160 +1,150 @@
 'use client';
 
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/Button';
-import { LogOut, Users, BarChart3, Settings } from 'lucide-react';
+import { useDashboardData } from '@/hooks/useDashboardData';
+import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar';
+import { DateFilter } from '@/components/dashboard/DateFilter';
+import { CollaboratorFilter } from '@/components/dashboard/CollaboratorFilter';
+import { OSPieChart, OSBarChart, OSCard } from '@/components/dashboard/OSChart';
+import { BarChart3, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuthGuard();
-  const { logout } = useAuth();
+  const { user, isLoading: authLoading } = useAuthGuard();
+  const { 
+    data, 
+    loading, 
+    error, 
+    filters, 
+    updateDateFilter, 
+    updateCollaboratorFilter, 
+    refreshData 
+  } = useDashboardData();
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center">
-  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-  //     </div>
-  //   );
-  // }
-
-  // if (!user) {
-  //   return null; // Será redirecionado pelo useAuthGuard
-  // }
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                Dashboard de Ordens de Serviço
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                {/* Olá, {user.email} ({user.grupo.nome}) */}
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={logout}
-                className="flex items-center space-x-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Sair</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-50">
+      <DashboardNavbar userName={user?.email} />
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            {/* Card de Estatísticas */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <BarChart3 className="h-6 w-6 text-gray-400" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Relatórios
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        Em breve
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card de Usuários */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Users className="h-6 w-6 text-gray-400" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Usuários
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.location.href = '/dashboard/usuarios'}
-                        >
-                          Gerenciar
-                        </Button>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card de Configurações */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <Settings className="h-6 w-6 text-gray-400" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
-                        Configurações
-                      </dt>
-                      <dd className="text-lg font-medium text-gray-900">
-                        Em breve
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          
+          {/* Filtros */}
+          <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <DateFilter
+              startDate={filters.dataInicio}
+              endDate={filters.dataFim}
+              onDateChange={updateDateFilter}
+            />
+            <CollaboratorFilter
+              colaboradores={data.colaboradores}
+              selectedCollaborators={filters.colaboradoresSelecionados}
+              onSelectionChange={updateCollaboratorFilter}
+              loading={loading}
+            />
           </div>
 
-          {/* Informações do Sistema */}
-          <div className="mt-8">
-            <div className="bg-white shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
-                  Sistema de Gerenciamento de Ordens de Serviço
-                </h3>
-                <div className="mt-2 max-w-xl text-sm text-gray-500">
-                  <p>
-                    Bem-vindo ao sistema! Esta aplicação está em desenvolvimento e seguindo o plano de ação definido.
+          {/* Botão de Atualizar */}
+          <div className="mb-6 flex justify-between items-center">
+            <h2 className="text-lg font-medium text-gray-900">
+              Dashboard de Produtividade - O.S
+            </h2>
+            <button
+              onClick={refreshData}
+              disabled={loading}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <span>Atualizar</span>
+            </button>
+          </div>
+
+          {/* Mensagem de Erro */}
+          {error && (
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
+              <div className="flex">
+                <AlertCircle className="h-5 w-5 text-red-400" />
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Erro ao carregar dados</h3>
+                  <div className="mt-2 text-sm text-red-700">
+                    <p>{error}</p>
+                    <p className="mt-1 text-xs">
+                      Verifique se as variáveis de ambiente NEXT_PUBLIC_IXC_API_URL e NEXT_PUBLIC_IXC_TOKEN estão configuradas corretamente.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Card de Total */}
+          <div className="mb-6">
+            <OSCard
+              title="Total de O.S no Período"
+              value={data.totalOS}
+              loading={loading}
+              icon={<BarChart3 className="h-6 w-6" />}
+            />
+          </div>
+
+          {/* Gráficos */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Gráfico de Pizza - O.S por Assunto */}
+            <OSPieChart
+              data={data.osPorAssunto}
+              title="O.S por Assunto"
+              loading={loading}
+            />
+
+            {/* Gráfico de Pizza - O.S por Cidade */}
+            <OSPieChart
+              data={data.osPorCidade}
+              title="O.S por Cidade"
+              loading={loading}
+            />
+          </div>
+
+          {/* Gráfico de Barras - O.S por Colaborador */}
+          <div className="mb-6">
+            <OSBarChart
+              data={data.osPorColaborador}
+              title="O.S por Colaborador"
+              loading={loading}
+            />
+          </div>
+
+          {/* Resumo de Período */}
+          {!loading && !error && (
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Resumo do Período</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                  <p className="text-gray-600">Período analisado:</p>
+                  <p className="font-medium">
+                    {new Date(filters.dataInicio).toLocaleDateString('pt-BR')} - {new Date(filters.dataFim).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
-                <div className="mt-5">
-                  <div className="rounded-md bg-blue-50 p-4">
-                    <div className="text-sm text-blue-700">
-                      <p><strong>Status atual:</strong></p>
-                      <ul className="mt-2 list-disc list-inside space-y-1">
-                        <li>✅ Backend NestJS com autenticação JWT implementado</li>
-                        <li>✅ Frontend Next.js com sistema de login</li>
-                        <li>✅ Arquitetura Clean implementada</li>
-                        <li>⏳ Módulo de usuários (em desenvolvimento)</li>
-                        <li>⏳ Dashboards com gráficos (próximo)</li>
-                      </ul>
-                    </div>
-                  </div>
+                <div>
+                  <p className="text-gray-600">Colaboradores:</p>
+                  <p className="font-medium">
+                    {filters.colaboradoresSelecionados.length === 0 ? 'Todos' : `${filters.colaboradoresSelecionados.length} selecionados`}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Última atualização:</p>
+                  <p className="font-medium">
+                    {new Date().toLocaleString('pt-BR')}
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>

@@ -83,68 +83,74 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Card de Total */}
-          <div className="mb-6">
-            <OSCard
-              title="Total de O.S no Período"
-              value={data.totalOS}
-              loading={loading}
-              icon={<BarChart3 className="h-6 w-6" />}
-            />
-          </div>
+          {/* Gráficos em Grid Responsivo */}
+          <div className="space-y-8">
+            
+            {/* Seção de Gráficos de Pizza */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              {/* Gráfico de Pizza - O.S por Assunto */}
+              <div className="min-h-[400px]">
+                <OSPieChart
+                  data={data.osPorAssunto}
+                  title="O.S por Assunto"
+                  loading={loading}
+                />
+              </div>
 
-          {/* Gráficos */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Gráfico de Pizza - O.S por Assunto */}
-            <OSPieChart
-              data={data.osPorAssunto}
-              title="O.S por Assunto"
-              loading={loading}
-            />
+              {/* Gráfico de Pizza - O.S por Cidade */}
+              <div className="min-h-[400px]">
+                <OSPieChart
+                  data={data.osPorCidade}
+                  title="O.S por Cidade"
+                  loading={loading}
+                />
+              </div>
+            </div>
 
-            {/* Gráfico de Pizza - O.S por Cidade */}
-            <OSPieChart
-              data={data.osPorCidade}
-              title="O.S por Cidade"
-              loading={loading}
-            />
-          </div>
-
-          {/* Gráfico de Barras - O.S por Colaborador */}
-          <div className="mb-6">
-            <OSBarChart
-              data={data.osPorColaborador}
-              title="O.S por Colaborador"
-              loading={loading}
-            />
+            {/* Gráfico de Barras - O.S por Colaborador */}
+            <div className="w-full">
+              <OSBarChart
+                data={data.osPorColaborador}
+                title="O.S por Colaborador"
+                loading={loading}
+              />
+            </div>
           </div>
 
           {/* Resumo de Período */}
-          {!loading && !error && (
-            <div className="bg-white shadow rounded-lg p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Resumo do Período</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-                <div>
-                  <p className="text-gray-600">Período analisado:</p>
-                  <p className="font-medium">
-                    {new Date(filters.dataInicio).toLocaleDateString('pt-BR')} - {new Date(filters.dataFim).toLocaleDateString('pt-BR')}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600">Colaboradores:</p>
-                  <p className="font-medium">
-                    {filters.colaboradoresSelecionados.length === 0 ? 'Todos' : `${filters.colaboradoresSelecionados.length} selecionados`}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-600">Última atualização:</p>
-                  <p className="font-medium">
-                    {new Date().toLocaleString('pt-BR')}
-                  </p>
+          <div className="mt-8">
+            {!loading && !error && (
+              <div className="bg-white shadow rounded-lg p-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-6">Resumo do Período</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="text-center md:text-left">
+                    <p className="text-gray-600 text-sm mb-1">Total de O.S:</p>
+                    <p className="font-bold text-3xl text-blue-600">
+                      {data.totalOS.toLocaleString('pt-BR')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Período analisado:</p>
+                    <p className="font-medium text-gray-900">
+                      {new Date(filters.dataInicio).toLocaleDateString('pt-BR')} - {new Date(filters.dataFim).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Colaboradores:</p>
+                    <p className="font-medium text-gray-900">
+                      {filters.colaboradoresSelecionados.length === 0 ? 'Todos' : `${filters.colaboradoresSelecionados.length} selecionados`}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 text-sm mb-1">Última atualização:</p>
+                    <p className="font-medium text-gray-900">
+                      {new Date().toLocaleString('pt-BR')}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </main>
     </div>

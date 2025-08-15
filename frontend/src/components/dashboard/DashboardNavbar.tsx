@@ -25,7 +25,7 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
               <div className="w-8 h-8 relative">
                 {/* Será substituído por uma imagem real */}
                 <Image
-                  src="/logo.png"
+                  src="/logo.jpeg"
                   alt="Logo"
                   width={32}
                   height={32}

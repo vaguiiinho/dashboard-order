@@ -118,7 +118,7 @@ Content-Type: application/json
 # Assundo por ID
 ###
 POST https://crm.tubaron.net/webservice/v1/su_oss_assunto
-Authorization: Basic token
+Authorization: Basic 44:82225522c68ce028c0652e38ccbade6ac43df33110853ec131ad1797aa1db656
 ixcsoft:listar
 Content-Type: application/json
 

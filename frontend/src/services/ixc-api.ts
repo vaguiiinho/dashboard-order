@@ -116,8 +116,7 @@ class IXCApiService {
     };
 
     const response = await this.api.post('/su_oss_chamado', payload);
-    console.log(response)
-    return response.data;
+     return response.data;
   }
 
   // O.S Por setor
@@ -149,6 +148,7 @@ class IXCApiService {
       grid_param: this.createGridParam(gridParams)
     };
 
+    console.log(payload)
     const response = await this.api.post('/su_oss_chamado', payload);
     return response.data;
   }

@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { CrmModule } from './modules/crm/crm.module';
+import { IXCModule } from './modules/ixc/ixc.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CrmModule } from './modules/crm/crm.module';
     AuthModule,
     UsuariosModule,
     CrmModule,
+    IXCModule,
   ],
   controllers: [AppController],
   providers: [AppService],

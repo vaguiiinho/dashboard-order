@@ -5,6 +5,7 @@ import { UsuarioRepository } from './repositories/usuario.repository';
 import { CriarUsuarioUseCase } from './use-cases/criar-usuario.use-case';
 import { ListarUsuariosUseCase } from './use-cases/listar-usuarios.use-case';
 import { BuscarUsuarioPorIdUseCase } from './use-cases/buscar-usuario-por-id.use-case';
+import { CriarGrupoUseCase } from './use-cases/criar-grupo.use-case';
 import { IUsuarioRepository } from './repositories/usuario.repository.interface';
 
 @Module({
@@ -28,6 +29,11 @@ import { IUsuarioRepository } from './repositories/usuario.repository.interface'
     {
       provide: BuscarUsuarioPorIdUseCase,
       useFactory: (repository: IUsuarioRepository) => new BuscarUsuarioPorIdUseCase(repository),
+      inject: ['IUsuarioRepository'],
+    },
+    {
+      provide: CriarGrupoUseCase,
+      useFactory: (repository: IUsuarioRepository) => new CriarGrupoUseCase(repository),
       inject: ['IUsuarioRepository'],
     },
   ],

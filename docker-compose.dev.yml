@@ -6,22 +6,54 @@ services:
     image: mysql:8.0
     container_name: dashboard_mysql_dev
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: dashboard_order_db
       MYSQL_USER: dashboard_user
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: dashboard_password
+      MYSQL_ROOT_HOST: '%'
     ports:
       - "3306:3306"
     volumes:
       - mysql_dev_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
       - dashboard_dev_network
     restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --sql-mode=""
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Banco de dados MySQL para testes
+  mysql-test:
+    image: mysql:8.0
+    container_name: dashboard_mysql_test
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: dashboard_order_test
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+    networks:
+      - dashboard_dev_network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password --sql-mode=""
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 volumes:
   mysql_dev_data:
+    driver: local
+  mysql_test_data:
+    driver: local
 
 networks:
   dashboard_dev_network:
     driver: bridge
-

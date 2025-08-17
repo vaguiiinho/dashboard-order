@@ -2,7 +2,8 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testRegex": ".*\\.spec\\.ts$",
+  "testPathPatterns": ["repositories"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
@@ -11,5 +12,5 @@
   },
   "testTimeout": 30000,
   "verbose": true,
-  "setupFilesAfterEnv": ["<rootDir>/setup.ts"]
+  "setupFilesAfterEnv": ["<rootDir>/setup-integration.ts"]
 }

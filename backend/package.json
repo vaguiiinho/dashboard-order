@@ -18,6 +18,14 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:unit": "jest --testPathPatterns=src --testPathIgnorePatterns=test",
+    "test:integration": "jest --config ./test/jest-integration.json",
+    "test:entities": "jest --testPathPatterns=entities",
+    "test:usecases": "jest --testPathPatterns=use-cases",
+    "test:repositories": "jest --config ./test/jest-integration.json",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
+    "db:test:setup": "chmod +x scripts/setup-test-db.sh && ./scripts/setup-test-db.sh",
+    "db:test:clean": "chmod +x scripts/clean-test-db.sh && ./scripts/clean-test-db.sh",
     "db:seed": "ts-node prisma/seed.ts"
   },
   "prisma": {
@@ -54,6 +62,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
+    "dotenv": "^16.4.5",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -69,22 +78,5 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }

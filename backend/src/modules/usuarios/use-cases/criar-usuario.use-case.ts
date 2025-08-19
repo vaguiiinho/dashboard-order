@@ -2,8 +2,6 @@ import { Injectable, ConflictException, BadRequestException } from '@nestjs/comm
 import type { IUsuarioRepository } from '../repositories/usuario.repository.interface';
 import { CreateUsuarioDto } from '../dto/create-usuario.dto';
 import { UsuarioResponseDto } from '../dto/usuario-response.dto';
-import { Usuario } from '../entities/usuario.entity';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class CriarUsuarioUseCase {
@@ -24,18 +22,8 @@ export class CriarUsuarioUseCase {
         throw new BadRequestException('Grupo não encontrado');
       }
 
-      // Criptografar a senha
-      const senhaCriptografada = await bcrypt.hash(createUsuarioDto.senha, 10);
-
-      // Criar a entidade Usuario
-      const usuario = new Usuario(
-        createUsuarioDto.email,
-        senhaCriptografada,
-        createUsuarioDto.grupoId
-      );
-
-      // Salvar no repositório
-      const usuarioSalvo = await this.usuarioRepository.create(usuario);
+      // Salvar no repositório (password hashing é feito no repository)
+      const usuarioSalvo = await this.usuarioRepository.create(createUsuarioDto);
 
       // Retornar DTO de resposta
       return new UsuarioResponseDto(usuarioSalvo);

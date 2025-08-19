@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Banco de dados MySQL para desenvolvimento
+  # 🗄️ Banco de dados MySQL para desenvolvimento
   mysql-dev:
     image: mysql:8.0
     container_name: dashboard_mysql_dev
@@ -17,7 +17,7 @@ services:
       - mysql_dev_data:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
-      - dashboard_dev_network
+      - dashboard_network
     restart: unless-stopped
     command: --default-authentication-plugin=mysql_native_password --sql-mode=""
     healthcheck:
@@ -25,7 +25,7 @@ services:
       timeout: 20s
       retries: 10
 
-  # Banco de dados MySQL para testes
+  # 🧪 Banco de dados MySQL para testes
   mysql-test:
     image: mysql:8.0
     container_name: dashboard_mysql_test
@@ -40,13 +40,26 @@ services:
     volumes:
       - mysql_test_data:/var/lib/mysql
     networks:
-      - dashboard_dev_network
+      - dashboard_network
     restart: unless-stopped
     command: --default-authentication-plugin=mysql_native_password --sql-mode=""
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       timeout: 20s
       retries: 10
+    profiles:
+      - test
+
+  # 📊 Adminer para administração do banco (opcional)
+  adminer:
+    image: adminer:4.8.1
+    container_name: dashboard_adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - dashboard_network
+    profiles:
+      - admin
 
 volumes:
   mysql_dev_data:
@@ -55,5 +68,5 @@ volumes:
     driver: local
 
 networks:
-  dashboard_dev_network:
+  dashboard_network:
     driver: bridge

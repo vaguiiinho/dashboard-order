@@ -1,56 +1,62 @@
 version: '3.8'
 
+# 🚀 Docker Compose para PRODUÇÃO
+# Use docker-compose.dev.yml para desenvolvimento
+
 services:
-  # Banco de dados MySQL
+  # 🗄️ Banco de dados MySQL
   mysql:
     image: mysql:8.0
-    container_name: dashboard_mysql
+    container_name: dashboard_mysql_prod
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: dashboard_order_db
-      MYSQL_USER: dashboard_user
-      MYSQL_PASSWORD: dashboard_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dashboard_order_db}
+      MYSQL_USER: ${MYSQL_USER:-dashboard_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-dashboard_password}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - dashboard_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
-  # Backend NestJS
+  # 🔧 Backend NestJS
   backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    container_name: dashboard_backend
+    container_name: dashboard_backend_prod
     environment:
-      - DATABASE_URL=mysql://dashboard_user:dashboard_password@mysql:3306/dashboard_order_db
-      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
-      - JWT_EXPIRES_IN=24h
-      - PORT=3001
+      - DATABASE_URL=mysql://${MYSQL_USER:-dashboard_user}:${MYSQL_PASSWORD:-dashboard_password}@mysql:3306/${MYSQL_DATABASE:-dashboard_order_db}
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - PORT=${BACKEND_PORT:-3001}
       - NODE_ENV=production
     ports:
-      - "3001:3001"
+      - "${BACKEND_PORT:-3001}:3001"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - dashboard_network
     restart: unless-stopped
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
 
-  # Frontend Next.js
+  # 🌐 Frontend Next.js
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: dashboard_frontend
+    container_name: dashboard_frontend_prod
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+      - NODE_ENV=production
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     depends_on:
       - backend
     networks:
@@ -59,6 +65,7 @@ services:
 
 volumes:
   mysql_data:
+    driver: local
 
 networks:
   dashboard_network:

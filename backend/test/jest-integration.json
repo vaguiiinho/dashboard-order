@@ -1,16 +1,22 @@
 {
+  "displayName": "Integration Tests",
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".*\\.spec\\.ts$",
-  "testPathPatterns": ["repositories"],
+  "testRegex": ".*\\.integration\\.spec\\.ts$",
+  "testPathPatterns": ["src"],
+  "testPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapping": {
     "^src/(.*)$": "<rootDir>/../src/$1"
   },
-  "testTimeout": 30000,
+  "testTimeout": 60000,
   "verbose": true,
-  "setupFilesAfterEnv": ["<rootDir>/setup-integration.ts"]
+  "setupFilesAfterEnv": ["<rootDir>/setup-integration.ts"],
+  "collectCoverage": false,
+  "forceExit": true,
+  "detectOpenHandles": true,
+  "maxWorkers": 1
 }

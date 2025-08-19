@@ -14,6 +14,8 @@ import { CreateUsuarioDto, UpdateUsuarioDto } from '../dto/create-usuario.dto';
 import { CriarUsuarioUseCase } from '../use-cases/criar-usuario.use-case';
 import { ListarUsuariosUseCase } from '../use-cases/listar-usuarios.use-case';
 import { BuscarUsuarioPorIdUseCase } from '../use-cases/buscar-usuario-por-id.use-case';
+import { AtualizarUsuarioUseCase } from '../use-cases/atualizar-usuario.use-case';
+import { RemoverUsuarioUseCase } from '../use-cases/remover-usuario.use-case';
 
 @Controller('usuarios')
 @UseGuards(JwtAuthGuard)
@@ -22,6 +24,8 @@ export class UsuariosController {
     private readonly criarUsuarioUseCase: CriarUsuarioUseCase,
     private readonly listarUsuariosUseCase: ListarUsuariosUseCase,
     private readonly buscarUsuarioPorIdUseCase: BuscarUsuarioPorIdUseCase,
+    private readonly atualizarUsuarioUseCase: AtualizarUsuarioUseCase,
+    private readonly removerUsuarioUseCase: RemoverUsuarioUseCase,
   ) {}
 
   @Post()
@@ -39,17 +43,14 @@ export class UsuariosController {
     return this.buscarUsuarioPorIdUseCase.execute(id);
   }
 
-  // TODO: Implementar update e delete use cases
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    // Implementar use case para atualizar usuário
-    return `This action updates a #${id} usuario`;
+    return this.atualizarUsuarioUseCase.execute(id, updateUsuarioDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    // Implementar use case para remover usuário
-    return `This action removes a #${id} usuario`;
+    return this.removerUsuarioUseCase.execute(id);
   }
 }
 

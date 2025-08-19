@@ -28,6 +28,8 @@ model Usuario {
 model Grupo {
   id        Int       @id @default(autoincrement())
   nome      String    @unique // Ex: "gerente", "supervisor", "colaborador"
+  descricao String?   // Descrição opcional do grupo
+  ativo     Boolean   @default(true) // Status ativo/inativo do grupo
   usuarios  Usuario[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

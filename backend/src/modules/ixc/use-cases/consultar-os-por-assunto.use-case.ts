@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConsultaOSPorAssuntoDto } from '../dto/consulta-os.dto';
 import { ListaOSResponseDto } from '../dto/resposta-ixc.dto';
 import { OrdemServico } from '../entities/ordem-servico.entity';
-import { IIXCRepository } from '../repositories/ixc.repository.interface';
+import type { IIXCRepository } from '../repositories/ixc.repository.interface';
 
 @Injectable()
 export class ConsultarOSPorAssuntoUseCase {

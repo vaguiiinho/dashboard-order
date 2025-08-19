@@ -5,6 +5,8 @@ import { UsuarioRepository } from './repositories/usuario.repository';
 import { CriarUsuarioUseCase } from './use-cases/criar-usuario.use-case';
 import { ListarUsuariosUseCase } from './use-cases/listar-usuarios.use-case';
 import { BuscarUsuarioPorIdUseCase } from './use-cases/buscar-usuario-por-id.use-case';
+import { AtualizarUsuarioUseCase } from './use-cases/atualizar-usuario.use-case';
+import { RemoverUsuarioUseCase } from './use-cases/remover-usuario.use-case';
 import { CriarGrupoUseCase } from './use-cases/criar-grupo.use-case';
 import { IUsuarioRepository } from './repositories/usuario.repository.interface';
 
@@ -29,6 +31,16 @@ import { IUsuarioRepository } from './repositories/usuario.repository.interface'
     {
       provide: BuscarUsuarioPorIdUseCase,
       useFactory: (repository: IUsuarioRepository) => new BuscarUsuarioPorIdUseCase(repository),
+      inject: ['IUsuarioRepository'],
+    },
+    {
+      provide: AtualizarUsuarioUseCase,
+      useFactory: (repository: IUsuarioRepository) => new AtualizarUsuarioUseCase(repository),
+      inject: ['IUsuarioRepository'],
+    },
+    {
+      provide: RemoverUsuarioUseCase,
+      useFactory: (repository: IUsuarioRepository) => new RemoverUsuarioUseCase(repository),
       inject: ['IUsuarioRepository'],
     },
     {

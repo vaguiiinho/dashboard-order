@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,26 +10,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  senha     String
-  grupoId   Int
-  grupo     Grupo    @relation(fields: [grupoId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Tabela de Setores
+model Setor {
+  id        String   @id @default(uuid())
+  nome      String   @unique @db.VarChar(50)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("usuarios")
+  colaboradores  Colaborador[]
+  tiposAtividade TipoAtividade[]
+  registrosOS    RegistroOS[]
+
+  @@map("setores")
 }
 
-model Grupo {
-  id        Int       @id @default(autoincrement())
-  nome      String    @unique // Ex: "gerente", "supervisor", "colaborador"
-  descricao String?   // Descrição opcional do grupo
-  ativo     Boolean   @default(true) // Status ativo/inativo do grupo
-  usuarios  Usuario[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+// Tabela de Colaboradores
+model Colaborador {
+  id        String   @id @default(uuid())
+  nome      String   @db.VarChar(100)
+  setorId   String   @map("setor_id")
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("grupos")
+  setor       Setor        @relation(fields: [setorId], references: [id])
+  registrosOS RegistroOS[]
+
+  @@index([setorId])
+  @@map("colaboradores")
 }
+
+// Tabela de Tipos de Atividade
+model TipoAtividade {
+  id        String   @id @default(uuid())
+  nome      String   @db.VarChar(200)
+  setorId   String   @map("setor_id")
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  setor       Setor        @relation(fields: [setorId], references: [id])
+  registrosOS RegistroOS[]
+
+  @@index([setorId])
+  @@map("tipos_atividade")
+}
+
+// Tabela principal de Registros de OS
+model RegistroOS {
+  id              String   @id @default(uuid())
+  setorId         String   @map("setor_id")
+  colaboradorId   String   @map("colaborador_id")
+  tipoAtividadeId String   @map("tipo_atividade_id")
+  quantidade      Int
+  mes             String   @db.VarChar(2) // "01" a "12"
+  ano             String   @db.VarChar(4) // "2024", "2025", etc
+  observacoes     String?  @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  setor         Setor         @relation(fields: [setorId], references: [id])
+  colaborador   Colaborador   @relation(fields: [colaboradorId], references: [id])
+  tipoAtividade TipoAtividade @relation(fields: [tipoAtividadeId], references: [id])
+
+  @@index([setorId])
+  @@index([colaboradorId])
+  @@index([tipoAtividadeId])
+  @@index([mes, ano])
+  @@map("registros_os")
+}
+

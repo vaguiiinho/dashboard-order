@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ixcApiService } from '@/services/ixc-api';
+import { ordemServicoService } from '@/services/ordemServicoService';
 
 interface DashboardData {
   totalOS: number;
@@ -59,89 +59,135 @@ export function useDashboardData() {
       setLoading(true);
       setError(null);
 
-      const startDate = formatDateForAPI(filters.dataInicio);
-      const endDate = formatEndDateForAPI(filters.dataFim);
+      // Primeiro, tentar carregar dados do nosso sistema de cadastro em massa
+      try {
+        const relatorio = await ordemServicoService.getRelatorio();
+        
+        // Processar dados do nosso sistema
+        const totalOS = relatorio.totalGeral;
+        
+        // O.S por Assunto (tipo de atividade)
+        const osPorAssunto = Object.entries(relatorio.totalPorTipo).map(([tipo, quantidade]) => ({
+          id: tipo,
+          name: tipo,
+          value: quantidade
+        })).sort((a, b) => b.value - a.value);
 
-      // Carregar dados completos do dashboard
-      const dashboardData = await ixcApiService.getDashboardData(
-        startDate,
-        endDate,
-        filters.colaboradoresSelecionados.length > 0 ? filters.colaboradoresSelecionados : undefined
-      );
+        // O.S por Colaborador
+        const osPorColaborador = Object.entries(relatorio.totalPorColaborador).map(([nome, quantidade]) => ({
+          id: nome,
+          name: nome,
+          value: quantidade
+        })).sort((a, b) => b.value - a.value);
 
-      // Processar dados para os gráficos
-      
-      // 1. Total de O.S (soma do setor)
-      const totalOS = dashboardData.osSetor.total;
+        // Carregar colaboradores para filtro
+        const colaboradoresResponse = await ordemServicoService.getColaboradores('FTTH');
+        const colaboradores = colaboradoresResponse.map(c => ({
+          id: c.id,
+          funcionario: c.nome
+        }));
 
-      // 2. O.S por Assunto
-      const assuntoStats = new Map<string, number>();
-      dashboardData.osAssunto.registros.forEach(os => {
-        if (os.id_assunto) {
-          assuntoStats.set(os.id_assunto, (assuntoStats.get(os.id_assunto) || 0) + 1);
-        }
-      });
+        // Cidades (dados mockados por enquanto)
+        const osPorCidade: Array<{ name: string; value: number; id: string }> = [
+          { id: '1', name: 'Porto Alegre', value: 0 },
+          { id: '2', name: 'Rio Pardo', value: 0 },
+          { id: '3', name: 'Nova Petrópolis', value: 0 }
+        ];
 
-      const osPorAssunto = Array.from(assuntoStats.entries()).map(([assuntoId, count]) => {
-        const assunto = dashboardData.assuntos.registros.find(a => a.id === assuntoId);
-        return {
-          id: assuntoId,
-          name: assunto?.assunto || `Assunto ${assuntoId}`,
-          value: count
-        };
-      }).sort((a, b) => b.value - a.value);
+        setData({
+          totalOS,
+          osPorAssunto,
+          osPorCidade,
+          osPorColaborador,
+          colaboradores
+        });
+        
+      } catch (internalError) {
+        console.log('Sistema interno não disponível, usando IXC API...');
+        
+        // Fallback para IXC API
+        const startDate = formatDateForAPI(filters.dataInicio);
+        const endDate = formatEndDateForAPI(filters.dataFim);
 
-      // 3. O.S por Cidade  
-      const cidadeStats = new Map<string, number>();
-      dashboardData.osCidade.registros.forEach(os => {
-        if (os.id_cidade) {
-          cidadeStats.set(os.id_cidade, (cidadeStats.get(os.id_cidade) || 0) + 1);
-        }
-      });
+        // Carregar dados completos do dashboard
+        const dashboardData = await ixcApiService.getDashboardData(
+          startDate,
+          endDate,
+          filters.colaboradoresSelecionados.length > 0 ? filters.colaboradoresSelecionados : undefined
+        );
 
-      const osPorCidade = Array.from(cidadeStats.entries()).map(([cidadeId, count]) => {
-        const cidade = dashboardData.cidades.registros.find(c => c.id === cidadeId);
-        return {
-          id: cidadeId,
-          name: cidade?.nome || `Cidade ${cidadeId}`,
-          value: count
-        };
-      }).sort((a, b) => b.value - a.value);
+        // Processar dados para os gráficos
+        const totalOS = dashboardData.osSetor.total;
 
-      // 4. O.S por Colaborador
-      const colaboradorStats = new Map<string, number>();
-      dashboardData.osColaborador.registros.forEach(os => {
-        if (os.id_tecnico) {
-          colaboradorStats.set(os.id_tecnico, (colaboradorStats.get(os.id_tecnico) || 0) + 1);
-        }
-      });
+        // O.S por Assunto
+        const assuntoStats = new Map<string, number>();
+        dashboardData.osAssunto.registros.forEach(os => {
+          if (os.id_assunto) {
+            assuntoStats.set(os.id_assunto, (assuntoStats.get(os.id_assunto) || 0) + 1);
+          }
+        });
 
-      const osPorColaborador = Array.from(colaboradorStats.entries()).map(([tecnicoId, count]) => {
-        const colaborador = dashboardData.colaboradores.registros.find(c => c.id === tecnicoId);
-        return {
-          id: tecnicoId,
-          name: colaborador?.funcionario || `Colaborador ${tecnicoId}`,
-          value: count
-        };
-      }).sort((a, b) => b.value - a.value);
+        const osPorAssunto = Array.from(assuntoStats.entries()).map(([assuntoId, count]) => {
+          const assunto = dashboardData.assuntos.registros.find(a => a.id === assuntoId);
+          return {
+            id: assuntoId,
+            name: assunto?.assunto || `Assunto ${assuntoId}`,
+            value: count
+          };
+        }).sort((a, b) => b.value - a.value);
 
-      // 5. Lista de colaboradores para o filtro
-      const colaboradores = dashboardData.colaboradores.registros.map(c => ({
-        id: c.id,
-        funcionario: c.funcionario
-      }));
+        // O.S por Cidade  
+        const cidadeStats = new Map<string, number>();
+        dashboardData.osCidade.registros.forEach(os => {
+          if (os.id_cidade) {
+            cidadeStats.set(os.id_cidade, (cidadeStats.get(os.id_cidade) || 0) + 1);
+          }
+        });
 
-      setData({
-        totalOS,
-        osPorAssunto,
-        osPorCidade,
-        osPorColaborador,
-        colaboradores
-      });
+        const osPorCidade = Array.from(cidadeStats.entries()).map(([cidadeId, count]) => {
+          const cidade = dashboardData.cidades.registros.find(c => c.id === cidadeId);
+          return {
+            id: cidadeId,
+            name: cidade?.nome || `Cidade ${cidadeId}`,
+            value: count
+          };
+        }).sort((a, b) => b.value - a.value);
+
+        // O.S por Colaborador
+        const colaboradorStats = new Map<string, number>();
+        dashboardData.osColaborador.registros.forEach(os => {
+          if (os.id_tecnico) {
+            colaboradorStats.set(os.id_tecnico, (colaboradorStats.get(os.id_tecnico) || 0) + 1);
+          }
+        });
+
+        const osPorColaborador = Array.from(colaboradorStats.entries()).map(([tecnicoId, count]) => {
+          const colaborador = dashboardData.colaboradores.registros.find(c => c.id === tecnicoId);
+          return {
+            id: tecnicoId,
+            name: colaborador?.funcionario || `Colaborador ${tecnicoId}`,
+            value: count
+          };
+        }).sort((a, b) => b.value - a.value);
+
+        // Lista de colaboradores para o filtro
+        const colaboradores = dashboardData.colaboradores.registros.map(c => ({
+          id: c.id,
+          funcionario: c.funcionario
+        }));
+
+        setData({
+          totalOS,
+          osPorAssunto,
+          osPorCidade,
+          osPorColaborador,
+          colaboradores
+        });
+      }
 
     } catch (err) {
       console.error('Erro ao carregar dados do dashboard:', err);
-      setError('Erro ao carregar dados. Verifique as configurações da API IXC.');
+      setError('Erro ao carregar dados. Verifique a conexão com o backend.');
     } finally {
       setLoading(false);
     }

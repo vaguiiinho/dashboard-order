@@ -9,6 +9,7 @@ export interface IXCGridParam {
 // Interface para consulta de O.S
 export interface OSConsultaPayload {
   grid_param: string;
+  rp?: string;
 }
 
 // Interface para consulta por ID

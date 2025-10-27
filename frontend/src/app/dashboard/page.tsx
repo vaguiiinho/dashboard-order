@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthGuard } from '@/hooks/useAuthGuard';
+// import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar';
 import { DateFilter } from '@/components/dashboard/DateFilter';
@@ -9,7 +9,7 @@ import { OSPieChart, OSBarChart, OSCard } from '@/components/dashboard/OSChart';
 import { BarChart3, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function DashboardPage() {
-  const { user, isLoading: authLoading } = useAuthGuard();
+  // const { user, isLoading: authLoading } = useAuthGuard();
   const { 
     data, 
     loading, 
@@ -20,17 +20,17 @@ export default function DashboardPage() {
     refreshData 
   } = useDashboardData();
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // if (authLoading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardNavbar userName={user?.email} />
+      <DashboardNavbar  />
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">

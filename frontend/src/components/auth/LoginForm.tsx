@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
@@ -19,7 +18,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const router = useRouter();
 
   const {
@@ -34,7 +33,7 @@ export function LoginForm() {
     try {
       setIsLoading(true);
       setError(null);
-      await login(data);
+      // await login(data);
       router.push('/dashboard');
     } catch (err) {
       console.error('Erro no login:', err);

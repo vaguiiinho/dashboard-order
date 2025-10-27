@@ -80,7 +80,8 @@ export class CrmService {
       ];
 
       const payload: OSConsultaPayload = {
-        grid_param: this.createGridParam(gridParams)
+        grid_param: this.createGridParam(gridParams),
+        // rp: "100"
       };
 
       const response = await this.api.post('/su_oss_chamado', payload);
@@ -116,7 +117,8 @@ export class CrmService {
       ];
 
       const payload: OSConsultaPayload = {
-        grid_param: this.createGridParam(gridParams)
+        grid_param: this.createGridParam(gridParams),
+        // rp: "2000"
       };
 
       const response = await this.api.post('/su_oss_chamado', payload);
@@ -152,7 +154,8 @@ export class CrmService {
       ];
 
       const payload: OSConsultaPayload = {
-        grid_param: this.createGridParam(gridParams)
+        grid_param: this.createGridParam(gridParams),
+        // rp: "100"
       };
 
       const response = await this.api.post('/su_oss_chamado', payload);
@@ -188,7 +191,8 @@ export class CrmService {
       ];
 
       const payload: OSConsultaPayload = {
-        grid_param: this.createGridParam(gridParams)
+        grid_param: this.createGridParam(gridParams),
+        // rp: "100"
       };
 
       const response = await this.api.post('/su_oss_chamado', payload);

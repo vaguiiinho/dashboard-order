@@ -11,7 +11,7 @@ interface DashboardNavbarProps {
 }
 
 export function DashboardNavbar({ userName }: DashboardNavbarProps) {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
@@ -97,7 +97,7 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
                   <button
                     onClick={() => {
                       setShowUserMenu(false);
-                      logout();
+                      // logout();
                     }}
                     className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                   >

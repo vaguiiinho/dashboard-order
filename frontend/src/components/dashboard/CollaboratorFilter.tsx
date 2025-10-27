@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ColaboradorResponse } from '@/services/ixc-api';
+import { useState } from 'react';
 
 interface Colaborador {
   id: string;

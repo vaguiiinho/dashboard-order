@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar';
 import { ordemServicoService, Colaborador, TipoAtividade } from '@/services/ordemServicoService';
 import {
   FileText,
@@ -218,9 +217,7 @@ export default function OrdemServicoPage() {
   const stats = calcularEstatisticas();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
-      <DashboardNavbar />
-
+    <div className="h-full overflow-y-auto bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">

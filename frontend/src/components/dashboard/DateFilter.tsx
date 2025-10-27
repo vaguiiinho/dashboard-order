@@ -25,7 +25,6 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
   const setPresetDates = (preset: 'today' | 'week' | 'month' | 'quarter') => {
     const now = new Date();
     let start: Date;
-    let end: Date = new Date(now);
 
     switch (preset) {
       case 'today':
@@ -47,6 +46,7 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
         start = new Date(now);
     }
 
+    const end = new Date(now);
     const startStr = start.toISOString().split('T')[0];
     const endStr = end.toISOString().split('T')[0];
     

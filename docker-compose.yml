@@ -30,14 +30,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: dashboard_order_db
-      MYSQL_USER: dashboard_user
-      MYSQL_PASSWORD: dashboard_password
+      # Simplificado para usar apenas o usuário root
+      # Removidos MYSQL_USER e MYSQL_PASSWORD
       MYSQL_ROOT_HOST: '%'
     ports:
       - "3306:3306"
     volumes:
       - ./mysql_dev_data:/var/lib/mysql
-      - ./mysql/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
  
 

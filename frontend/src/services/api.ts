@@ -11,9 +11,12 @@ const api = axios.create({
 // Interceptor para adicionar o token de autenticação
 api.interceptors.request.use(
   (config) => {
-    const token = Cookies.get('auth-token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Only read browser cookies on the client to avoid SSR issues
+    if (typeof window !== 'undefined') {
+      const token = Cookies.get('auth-token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -28,8 +31,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expirado ou inválido
-      Cookies.remove('auth-token');
-      window.location.href = '/login';
+      if (typeof window !== 'undefined') {
+        Cookies.remove('auth-token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

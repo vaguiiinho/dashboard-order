@@ -10,6 +10,9 @@ export class CreateRegistroOSDto {
   @IsString()
   tipoAtividade: string;
 
+  @IsString()
+  cidade: string;
+
   @IsInt()
   @Min(1)
   quantidade: number;

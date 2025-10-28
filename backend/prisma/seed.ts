@@ -10,6 +10,7 @@ async function main() {
   await prisma.tipoAtividade.deleteMany();
   await prisma.colaborador.deleteMany();
   await prisma.setor.deleteMany();
+  await prisma.cidade.deleteMany();
 
   // Criar Setores
   const setorFTTH = await prisma.setor.create({
@@ -29,6 +30,28 @@ async function main() {
   });
 
   console.log('✅ Setores criados');
+
+  // Criar Cidades
+  const cidades = [
+    { nome: 'Tubarão', estado: 'SC' },
+    { nome: 'Laguna', estado: 'SC' },
+    { nome: 'Imbituba', estado: 'SC' },
+    { nome: 'Gravatal', estado: 'SC' },
+    { nome: 'Capivari de Baixo', estado: 'SC' },
+    { nome: 'São José', estado: 'SC' },
+    { nome: 'Florianópolis', estado: 'SC' },
+    { nome: 'Palhoça', estado: 'SC' },
+  ];
+
+  const cidadeRecords: any[] = [];
+  for (const cidade of cidades) {
+    const cidadeRecord = await prisma.cidade.create({
+      data: cidade,
+    });
+    cidadeRecords.push(cidadeRecord);
+  }
+
+  console.log('✅ Cidades criadas');
 
   // Criar Colaboradores - FTTH
   const colaboradoresFTTH = [
@@ -154,6 +177,71 @@ async function main() {
   }
 
   console.log('✅ Tipos de atividade criados');
+
+  // Criar alguns registros de exemplo com cidades
+  const colaboradores = await prisma.colaborador.findMany();
+  const tiposAtividade = await prisma.tipoAtividade.findMany();
+
+  // Criar registros de exemplo para diferentes cidades
+  const registrosExemplo = [
+    {
+      colaborador: colaboradores[0], // Alan
+      tipoAtividade: tiposAtividade[0], // Instalação
+      cidade: cidadeRecords[0], // Tubarão
+      quantidade: 5,
+      mes: '01',
+      ano: '2024',
+    },
+    {
+      colaborador: colaboradores[1], // Páscoa
+      tipoAtividade: tiposAtividade[1], // Adequação
+      cidade: cidadeRecords[1], // Laguna
+      quantidade: 3,
+      mes: '01',
+      ano: '2024',
+    },
+    {
+      colaborador: colaboradores[2], // Everson
+      tipoAtividade: tiposAtividade[2], // Sem Conexão
+      cidade: cidadeRecords[2], // Imbituba
+      quantidade: 7,
+      mes: '01',
+      ano: '2024',
+    },
+    {
+      colaborador: colaboradores[0], // Alan
+      tipoAtividade: tiposAtividade[0], // Instalação
+      cidade: cidadeRecords[0], // Tubarão
+      quantidade: 4,
+      mes: '02',
+      ano: '2024',
+    },
+    {
+      colaborador: colaboradores[3], // Carlos
+      tipoAtividade: tiposAtividade[3], // Verificação de Equipamento
+      cidade: cidadeRecords[3], // Gravatal
+      quantidade: 2,
+      mes: '02',
+      ano: '2024',
+    },
+  ];
+
+  for (const registro of registrosExemplo) {
+    await prisma.registroOS.create({
+      data: {
+        setorId: registro.colaborador.setorId,
+        colaboradorId: registro.colaborador.id,
+        tipoAtividadeId: registro.tipoAtividade.id,
+        cidadeId: registro.cidade.id,
+        quantidade: registro.quantidade,
+        mes: registro.mes,
+        ano: registro.ano,
+        observacoes: `Registro de exemplo para ${registro.cidade.nome}`,
+      },
+    });
+  }
+
+  console.log('✅ Registros de exemplo criados');
 
   console.log('🎉 Seed concluído com sucesso!');
 }

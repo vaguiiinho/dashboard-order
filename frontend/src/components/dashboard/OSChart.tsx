@@ -309,8 +309,9 @@ export function OSCard({ title, value, loading = false, icon }: OSCardProps) {
           <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide">
             {title}
           </h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900">
-            {value.toLocaleString('pt-BR')}
+          {/* Guard locale-dependent formatting to avoid SSR/client mismatch */}
+          <p className="mt-2 text-3xl font-bold text-gray-900" suppressHydrationWarning>
+            {typeof window === 'undefined' ? value : Number(value).toLocaleString('pt-BR')}
           </p>
         </div>
       </div>

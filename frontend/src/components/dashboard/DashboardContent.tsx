@@ -3,6 +3,7 @@
 import { DateFilter } from '@/components/dashboard/DateFilter';
 import { CollaboratorFilter } from '@/components/dashboard/CollaboratorFilter';
 import { OSPieChart, OSBarChart } from '@/components/dashboard/OSChart';
+import { ClientTime } from '@/components/ui/ClientTime';
 import { RefreshCw, AlertCircle } from 'lucide-react';
 
 interface DashboardContentProps {
@@ -71,7 +72,7 @@ export function DashboardContent({
               Estatísticas em Tempo Real
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              Última atualização: {new Date().toLocaleTimeString('pt-BR')}
+              Última atualização: <ClientTime />
             </p>
           </div>
           <button
@@ -110,7 +111,10 @@ export function DashboardContent({
                 </svg>
               </div>
             </div>
-            <p className="text-4xl font-bold">{data.totalOS.toLocaleString('pt-BR')}</p>
+            {/* Guard locale-dependent formatting to avoid SSR/client mismatch */}
+            <p className="text-4xl font-bold" suppressHydrationWarning>
+              {typeof window === 'undefined' ? data.totalOS : Number(data.totalOS).toLocaleString('pt-BR')}
+            </p>
           </div>
 
           <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
@@ -138,8 +142,9 @@ export function DashboardContent({
                 </svg>
               </div>
             </div>
-            <p className="text-sm font-medium">
-              {new Date(filters.dataInicio).toLocaleDateString('pt-BR')} - {new Date(filters.dataFim).toLocaleDateString('pt-BR')}
+            {/* Avoid locale-dependent rendering on the server to prevent hydration mismatch */}
+            <p className="text-sm font-medium" suppressHydrationWarning>
+              {typeof window === 'undefined' ? 'Carregando...' : `${new Date(filters.dataInicio).toLocaleDateString('pt-BR')} - ${new Date(filters.dataFim).toLocaleDateString('pt-BR')}`}
             </p>
           </div>
         </div>

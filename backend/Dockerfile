@@ -3,5 +3,5 @@ FROM node:20-alpine
 WORKDIR /app
 
 
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["npm", "run", "start:dev"]
 

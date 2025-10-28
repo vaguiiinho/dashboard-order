@@ -10,52 +10,6 @@ import { CreateRegistroOSDto } from './dto/create-registro-os.dto';
 export class OrdemServicoService {
   constructor(private prisma: PrismaService) {}
 
-  // Buscar todos os setores
-  async findAllSetores() {
-    return this.prisma.setor.findMany({
-      where: { ativo: true },
-      orderBy: { nome: 'asc' },
-    });
-  }
-
-  // Buscar colaboradores por setor
-  async findColaboradoresBySetor(setorNome: string) {
-    const setor = await this.prisma.setor.findUnique({
-      where: { nome: setorNome },
-    });
-
-    if (!setor) {
-      throw new NotFoundException(`Setor ${setorNome} não encontrado`);
-    }
-
-    return this.prisma.colaborador.findMany({
-      where: {
-        setorId: setor.id,
-        ativo: true,
-      },
-      orderBy: { nome: 'asc' },
-    });
-  }
-
-  // Buscar tipos de atividade por setor
-  async findTiposAtividadeBySetor(setorNome: string) {
-    const setor = await this.prisma.setor.findUnique({
-      where: { nome: setorNome },
-    });
-
-    if (!setor) {
-      throw new NotFoundException(`Setor ${setorNome} não encontrado`);
-    }
-
-    return this.prisma.tipoAtividade.findMany({
-      where: {
-        setorId: setor.id,
-        ativo: true,
-      },
-      orderBy: { nome: 'asc' },
-    });
-  }
-
   // Criar um único registro
   async createRegistro(dto: CreateRegistroOSDto) {
     // Buscar setor
@@ -95,12 +49,22 @@ export class OrdemServicoService {
       );
     }
 
+    // Buscar cidade
+    const cidade = await this.prisma.cidade.findUnique({
+      where: { nome: dto.cidade },
+    });
+
+    if (!cidade) {
+      throw new NotFoundException(`Cidade ${dto.cidade} não encontrada`);
+    }
+
     // Criar registro
     return this.prisma.registroOS.create({
       data: {
         setorId: setor.id,
         colaboradorId: colaborador.id,
         tipoAtividadeId: tipoAtividade.id,
+        cidadeId: cidade.id,
         quantidade: dto.quantidade,
         mes: dto.mes,
         ano: dto.ano,
@@ -110,6 +74,7 @@ export class OrdemServicoService {
         setor: true,
         colaborador: true,
         tipoAtividade: true,
+        cidade: true,
       },
     });
   }
@@ -130,6 +95,14 @@ export class OrdemServicoService {
     }
 
     return created;
+  }
+
+  // Buscar todas as cidades
+  async findAllCidades() {
+    return this.prisma.cidade.findMany({
+      where: { ativo: true },
+      orderBy: { nome: 'asc' },
+    });
   }
 
   // Buscar todos os registros com filtros opcionais
@@ -163,6 +136,7 @@ export class OrdemServicoService {
         setor: true,
         colaborador: true,
         tipoAtividade: true,
+        cidade: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -204,11 +178,96 @@ export class OrdemServicoService {
       {} as Record<string, number>,
     );
 
+    const totalPorCidade = registros.reduce(
+      (acc, r) => {
+        const cidadeNome = r.cidade.nome;
+        acc[cidadeNome] = (acc[cidadeNome] || 0) + r.quantidade;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
     return {
       totalGeral,
       totalPorSetor,
       totalPorColaborador,
       totalPorTipo,
+      totalPorCidade,
+      registros,
+    };
+  }
+
+  // Gerar relatório por cidade
+  async gerarRelatorioPorCidade(filters?: { mes?: string; ano?: string }) {
+    const where: any = {};
+
+    if (filters?.mes) {
+      where.mes = filters.mes;
+    }
+
+    if (filters?.ano) {
+      where.ano = filters.ano;
+    }
+
+    const registros = await this.prisma.registroOS.findMany({
+      where,
+      include: {
+        cidade: true,
+        setor: true,
+        colaborador: true,
+        tipoAtividade: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    // Calcular estatísticas por cidade
+    const totalGeral = registros.reduce((acc, r) => acc + r.quantidade, 0);
+
+    const totalPorCidade = registros.reduce(
+      (acc, r) => {
+        const cidadeNome = r.cidade.nome;
+        if (!acc[cidadeNome]) {
+          acc[cidadeNome] = {
+            nome: cidadeNome,
+            estado: r.cidade.estado,
+            total: 0,
+            registros: [],
+          };
+        }
+        acc[cidadeNome].total += r.quantidade;
+        acc[cidadeNome].registros.push(r);
+        return acc;
+      },
+      {} as Record<string, { nome: string; estado: string; total: number; registros: any[] }>,
+    );
+
+    // Calcular estatísticas por setor dentro de cada cidade
+    const totalPorCidadeESetor = registros.reduce(
+      (acc, r) => {
+        const cidadeNome = r.cidade.nome;
+        const setorNome = r.setor.nome;
+        const key = `${cidadeNome}-${setorNome}`;
+        
+        if (!acc[key]) {
+          acc[key] = {
+            cidade: cidadeNome,
+            estado: r.cidade.estado,
+            setor: setorNome,
+            total: 0,
+          };
+        }
+        acc[key].total += r.quantidade;
+        return acc;
+      },
+      {} as Record<string, { cidade: string; estado: string; setor: string; total: number }>,
+    );
+
+    return {
+      totalGeral,
+      totalPorCidade: Object.values(totalPorCidade),
+      totalPorCidadeESetor: Object.values(totalPorCidadeESetor),
       registros,
     };
   }

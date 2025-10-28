@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ordemServicoService, Colaborador, TipoAtividade } from '@/services/ordemServicoService';
+import { ordemServicoService, Colaborador, TipoAtividade, Cidade, RegistroOSResponse, Setor } from '@/services/ordemServicoService';
 import {
   FileText,
   CheckCircle2,
@@ -25,6 +25,7 @@ const ordemServicoSchema = z.object({
   setor: z.enum(['FTTH', 'INFRAESTRUTURA', 'SUPORTE', 'FINANCEIRO']),
   tipoAtividade: z.string().min(1, 'Selecione o tipo de atividade'),
   colaborador: z.string().min(1, 'Selecione um colaborador'),
+  cidade: z.string().min(1, 'Selecione a cidade'),
   quantidade: z.number().min(1, 'Quantidade deve ser no mínimo 1'),
   mes: z.string().min(1, 'Selecione o mês'),
   ano: z.string().min(1, 'Selecione o ano'),
@@ -43,63 +44,6 @@ type RegistroOS = {
   id: string;
 };
 
-// Dados mockados para os dropdowns
-const setores = ['FTTH', 'INFRAESTRUTURA', 'SUPORTE', 'FINANCEIRO'];
-
-const tiposAtividade = {
-  FTTH: [
-    'Instalação',
-    'Adequação',
-    'Sem Conexão',
-    'Verificação de Equipamento',
-    'Recuperação de Crédito',
-    'Retirada (Cancelamento/Negativados)',
-    'Consultiva',
-    'Mudança de Endereço',
-    'Sinal Atenuado',
-    'Problemas na TV',
-    'Retrabalho',
-    'Telefonia',
-    'Instalação TV',
-    'Instalação Rede Mesh',
-  ],
-  INFRAESTRUTURA: [
-    'Manutenção BKB Indisponível',
-    'Manutenção FTTH Indisponível',
-    'Ampliação Rede FTTH',
-    'Instalação Pop BKB',
-    'Manutenção Predial',
-    'Manutenção FTTH Prejudicado',
-    'Manutenção BKB Prejudicado',
-  ],
-  SUPORTE: [
-    'Suporte Técnico - Sem Conexão',
-    'Suporte Técnico - Problema Sinal Wi-fi',
-    'Suporte Téc. sem retorno do cliente',
-    'Suporte Técnico - Dúvidas e informações',
-    'Suporte Técnico - Tubaplay',
-    'Envio de fatura / Desbloqueio',
-    'Troca de endereço',
-    'Suporte Técnico - Senha / Nome Wi-Fi',
-    'Troca de login',
-    'Direcionamento de Portas',
-    'Suporte Técnico - Problema no STB',
-    'Suporte Técnico - Telefonia',
-  ],
-  FINANCEIRO: [
-    'Recuperação de Crédito/Visita',
-    'Retirada de Equipamento',
-    'Cobrança',
-    'Negativação',
-  ],
-};
-
-const colaboradores = {
-  FTTH: ['Alan', 'Páscoa', 'Everson', 'Carlos', 'Kassio', 'Ralfe', 'Alisson'],
-  INFRAESTRUTURA: ['Emerson', 'Julio', 'Matheus', 'Maurício', 'Cristiano', 'Severo', 'Joel'],
-  SUPORTE: ['Equipe Suporte'],
-  FINANCEIRO: ['Equipe Financeiro'],
-};
 
 const meses = [
   { value: '01', label: 'Janeiro' },
@@ -119,12 +63,14 @@ const meses = [
 const anos = ['2024', '2025', '2026'];
 
 export default function OrdemServicoPage() {
-  const [registros, setRegistros] = useState<RegistroOS[]>([]);
+  const [registros, setRegistros] = useState<RegistroOSResponse[]>([]);
   const [showRelatorio, setShowRelatorio] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [colaboradoresDisponiveis, setColaboradoresDisponiveis] = useState<Colaborador[]>([]);
   const [tiposAtividadeDisponiveis, setTiposAtividadeDisponiveis] = useState<TipoAtividade[]>([]);
+  const [setoresDisponiveis, setSetoresDisponiveis] = useState<Setor[]>([]);
+  const [cidadesDisponiveis, setCidadesDisponiveis] = useState<Cidade[]>([]);
 
   const {
     register,
@@ -137,6 +83,29 @@ export default function OrdemServicoPage() {
   });
 
   const setorSelecionado = watch('setor');
+
+  // Carregar setores, cidades e registros do banco na inicialização
+  useEffect(() => {
+    const carregarDadosIniciais = async () => {
+      try {
+        setLoading(true);
+        const [setores, cidades, registros] = await Promise.all([
+          ordemServicoService.getSetores(),
+          ordemServicoService.getCidades(),
+          ordemServicoService.getAllRegistros()
+        ]);
+        setSetoresDisponiveis(setores);
+        setCidadesDisponiveis(cidades);
+        setRegistros(registros);
+      } catch (error) {
+        console.error('Erro ao carregar dados iniciais:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    carregarDadosIniciais();
+  }, []);
 
   // Carregar colaboradores e tipos de atividade quando o setor mudar
   useEffect(() => {
@@ -164,11 +133,10 @@ export default function OrdemServicoPage() {
       setLoading(true);
       await ordemServicoService.createRegistro(data);
       
-      const novoRegistro: RegistroOS = {
-        ...data,
-        id: crypto.randomUUID(),
-      };
-      setRegistros([...registros, novoRegistro]);
+      // Recarregar registros do banco após salvar
+      const novosRegistros = await ordemServicoService.getAllRegistros();
+      setRegistros(novosRegistros);
+      
       reset();
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
@@ -180,23 +148,42 @@ export default function OrdemServicoPage() {
     }
   };
 
-  const removerRegistro = (id: string) => {
-    setRegistros(registros.filter((r) => r.id !== id));
+  const removerRegistro = async (id: string) => {
+    try {
+      setLoading(true);
+      await ordemServicoService.deleteRegistro(id);
+      
+      // Recarregar registros do banco após deletar
+      const novosRegistros = await ordemServicoService.getAllRegistros();
+      setRegistros(novosRegistros);
+    } catch (error) {
+      console.error('Erro ao deletar registro:', error);
+      alert('Erro ao deletar registro. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const calcularEstatisticas = () => {
     const totalPorSetor: Record<string, number> = {};
     const totalPorColaborador: Record<string, number> = {};
     const totalPorTipo: Record<string, number> = {};
+    const totalPorCidade: Record<string, number> = {};
     const totalGeral = registros.reduce((acc, r) => acc + r.quantidade, 0);
 
     registros.forEach((r) => {
-      totalPorSetor[r.setor] = (totalPorSetor[r.setor] || 0) + r.quantidade;
-      totalPorColaborador[r.colaborador] = (totalPorColaborador[r.colaborador] || 0) + r.quantidade;
-      totalPorTipo[r.tipoAtividade] = (totalPorTipo[r.tipoAtividade] || 0) + r.quantidade;
+      const setorNome = r.setor.nome;
+      const colaboradorNome = r.colaborador.nome;
+      const tipoNome = r.tipoAtividade.nome;
+      const cidadeNome = r.cidade?.nome || 'Não informada';
+      
+      totalPorSetor[setorNome] = (totalPorSetor[setorNome] || 0) + r.quantidade;
+      totalPorColaborador[colaboradorNome] = (totalPorColaborador[colaboradorNome] || 0) + r.quantidade;
+      totalPorTipo[tipoNome] = (totalPorTipo[tipoNome] || 0) + r.quantidade;
+      totalPorCidade[cidadeNome] = (totalPorCidade[cidadeNome] || 0) + r.quantidade;
     });
 
-    return { totalGeral, totalPorSetor, totalPorColaborador, totalPorTipo };
+    return { totalGeral, totalPorSetor, totalPorColaborador, totalPorTipo, totalPorCidade };
   };
 
   const gerarRelatorio = () => {
@@ -285,7 +272,7 @@ export default function OrdemServicoPage() {
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
                 <h2 className="text-2xl font-bold text-white flex items-center">
                   <Plus className="w-6 h-6 mr-3" />
-                  Adicionar Registro
+                  Novo Registro
                 </h2>
               </div>
 
@@ -301,9 +288,9 @@ export default function OrdemServicoPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     >
                       <option value="">Selecione o setor</option>
-                      {setores.map((setor) => (
-                        <option key={setor} value={setor}>
-                          {setor}
+                      {setoresDisponiveis.map((setor) => (
+                        <option key={setor.id} value={setor.nome}>
+                          {setor.nome}
                         </option>
                       ))}
                     </select>
@@ -365,6 +352,33 @@ export default function OrdemServicoPage() {
                       <p className="mt-1 text-sm text-red-600 flex items-center">
                         <AlertCircle className="w-4 h-4 mr-1" />
                         {errors.tipoAtividade.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Cidade */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Cidade <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      {...register('cidade')}
+                      disabled={loading}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    >
+                      <option value="">
+                        {loading ? 'Carregando...' : 'Selecione a cidade'}
+                      </option>
+                      {cidadesDisponiveis.map((cidade) => (
+                        <option key={cidade.id} value={cidade.nome}>
+                          {cidade.nome} - {cidade.estado}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.cidade && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle className="w-4 h-4 mr-1" />
+                        {errors.cidade.message}
                       </p>
                     )}
                   </div>
@@ -452,7 +466,7 @@ export default function OrdemServicoPage() {
                   ) : (
                     <>
                       <Save className="w-5 h-5" />
-                      <span>Adicionar Registro</span>
+                      <span>Salvar no Banco</span>
                     </>
                   )}
                 </button>
@@ -465,7 +479,7 @@ export default function OrdemServicoPage() {
                 <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
                   <h2 className="text-2xl font-bold text-white flex items-center">
                     <FileText className="w-6 h-6 mr-3" />
-                    Registros Adicionados ({registros.length})
+                    Registros Salvos ({registros.length})
                   </h2>
                 </div>
 
@@ -479,9 +493,9 @@ export default function OrdemServicoPage() {
                         <div className="flex-1">
                           <div className="flex items-center space-x-4">
                             <div className="flex-1">
-                              <p className="font-semibold text-gray-900">{registro.colaborador}</p>
+                              <p className="font-semibold text-gray-900">{registro.colaborador.nome}</p>
                               <p className="text-sm text-gray-600">
-                                {registro.setor} - {registro.tipoAtividade}
+                                {registro.setor.nome} - {registro.tipoAtividade.nome}
                               </p>
                             </div>
                             <div className="text-right">
@@ -638,7 +652,7 @@ export default function OrdemServicoPage() {
                 {/* Estatísticas Gerais */}
                 <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Estatísticas Gerais</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div className="text-center">
                       <p className="text-sm text-gray-600 mb-1">Total de Registros</p>
                       <p className="text-3xl font-bold text-blue-600">{registros.length}</p>
@@ -657,6 +671,12 @@ export default function OrdemServicoPage() {
                       <p className="text-sm text-gray-600 mb-1">Setores</p>
                       <p className="text-3xl font-bold text-orange-600">
                         {Object.keys(stats.totalPorSetor).length}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600 mb-1">Cidades</p>
+                      <p className="text-3xl font-bold text-red-600">
+                        {Object.keys(stats.totalPorCidade).length}
                       </p>
                     </div>
                   </div>
@@ -760,6 +780,39 @@ export default function OrdemServicoPage() {
                         </tbody>
                       </table>
                     </div>
+                  </div>
+                </div>
+
+                {/* Por Cidade */}
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">Quantidade por Cidade</h3>
+                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Cidade
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Quantidade
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {Object.entries(stats.totalPorCidade)
+                          .sort(([, a], [, b]) => b - a)
+                          .map(([cidade, qtd]) => (
+                            <tr key={cidade} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-medium text-gray-900">{cidade}</div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm font-bold text-orange-600">{qtd.toLocaleString('pt-BR')}</div>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

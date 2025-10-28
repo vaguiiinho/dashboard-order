@@ -29,11 +29,19 @@ export interface TipoAtividade {
   ativo: boolean;
 }
 
+export interface Cidade {
+  id: string;
+  nome: string;
+  estado: string;
+  ativo: boolean;
+}
+
 export interface RegistroOS {
   id?: string;
   setor: string;
   colaborador: string;
   tipoAtividade: string;
+  cidade: string;
   quantidade: number;
   mes: string;
   ano: string;
@@ -54,6 +62,7 @@ export interface RegistroOSResponse {
   setor: Setor;
   colaborador: Colaborador;
   tipoAtividade: TipoAtividade;
+  cidade: Cidade;
 }
 
 export interface RelatorioResponse {
@@ -61,19 +70,20 @@ export interface RelatorioResponse {
   totalPorSetor: Record<string, number>;
   totalPorColaborador: Record<string, number>;
   totalPorTipo: Record<string, number>;
+  totalPorCidade: Record<string, number>;
   registros: RegistroOSResponse[];
 }
 
 class OrdemServicoService {
   // Buscar todos os setores
   async getSetores(): Promise<Setor[]> {
-    const response = await api.get<Setor[]>('/ordem-servico/setores');
+    const response = await api.get<Setor[]>('/setores');
     return response.data;
   }
 
   // Buscar colaboradores por setor
   async getColaboradores(setor: string): Promise<Colaborador[]> {
-    const response = await api.get<Colaborador[]>('/ordem-servico/colaboradores', {
+    const response = await api.get<Colaborador[]>('/colaboradores', {
       params: { setor },
     });
     return response.data;
@@ -81,21 +91,27 @@ class OrdemServicoService {
 
   // Buscar tipos de atividade por setor
   async getTiposAtividade(setor: string): Promise<TipoAtividade[]> {
-    const response = await api.get<TipoAtividade[]>('/ordem-servico/tipos-atividade', {
+    const response = await api.get<TipoAtividade[]>('/tipos-atividade', {
       params: { setor },
     });
     return response.data;
   }
 
+  // Buscar todas as cidades
+  async getCidades(): Promise<Cidade[]> {
+    const response = await api.get<Cidade[]>('/registros-os/cidades');
+    return response.data;
+  }
+
   // Criar um único registro
   async createRegistro(registro: RegistroOS): Promise<RegistroOSResponse> {
-    const response = await api.post<RegistroOSResponse>('/ordem-servico/registro', registro);
+    const response = await api.post<RegistroOSResponse>('/registros-os', registro);
     return response.data;
   }
 
   // Criar múltiplos registros
   async createMultipleRegistros(registros: RegistroOS[]): Promise<RegistroOSResponse[]> {
-    const response = await api.post<RegistroOSResponse[]>('/ordem-servico/registros', {
+    const response = await api.post<RegistroOSResponse[]>('/registros-os/batch', {
       registros,
     });
     return response.data;
@@ -107,7 +123,7 @@ class OrdemServicoService {
     ano?: string;
     setor?: string;
   }): Promise<RegistroOSResponse[]> {
-    const response = await api.get<RegistroOSResponse[]>('/ordem-servico/registros', {
+    const response = await api.get<RegistroOSResponse[]>('/registros-os', {
       params: filters,
     });
     return response.data;
@@ -118,7 +134,7 @@ class OrdemServicoService {
     mes?: string;
     ano?: string;
   }): Promise<RelatorioResponse> {
-    const response = await api.get<RelatorioResponse>('/ordem-servico/relatorio', {
+    const response = await api.get<RelatorioResponse>('/registros-os/relatorio', {
       params: filters,
     });
     return response.data;
@@ -126,7 +142,7 @@ class OrdemServicoService {
 
   // Deletar um registro
   async deleteRegistro(id: string): Promise<void> {
-    await api.delete(`/ordem-servico/registro/${id}`);
+    await api.delete(`/registros-os/${id}`);
   }
 }
 

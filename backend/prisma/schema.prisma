@@ -57,12 +57,27 @@ model TipoAtividade {
   @@map("tipos_atividade")
 }
 
+// Tabela de Cidades
+model Cidade {
+  id        String   @id @default(uuid())
+  nome      String   @unique @db.VarChar(100)
+  estado    String   @db.VarChar(2) // Sigla do estado (ex: "SP", "RJ")
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  registrosOS RegistroOS[]
+
+  @@map("cidades")
+}
+
 // Tabela principal de Registros de OS
 model RegistroOS {
   id              String   @id @default(uuid())
   setorId         String   @map("setor_id")
   colaboradorId   String   @map("colaborador_id")
   tipoAtividadeId String   @map("tipo_atividade_id")
+  cidadeId        String   @map("cidade_id")
   quantidade      Int
   mes             String   @db.VarChar(2) // "01" a "12"
   ano             String   @db.VarChar(4) // "2024", "2025", etc
@@ -73,10 +88,12 @@ model RegistroOS {
   setor         Setor         @relation(fields: [setorId], references: [id])
   colaborador   Colaborador   @relation(fields: [colaboradorId], references: [id])
   tipoAtividade TipoAtividade @relation(fields: [tipoAtividadeId], references: [id])
+  cidade        Cidade        @relation(fields: [cidadeId], references: [id])
 
   @@index([setorId])
   @@index([colaboradorId])
   @@index([tipoAtividadeId])
+  @@index([cidadeId])
   @@index([mes, ano])
   @@map("registros_os")
 }

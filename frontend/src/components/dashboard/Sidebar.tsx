@@ -73,7 +73,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           bg-white shadow-lg z-40
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 lg:static lg:top-0 lg:h-[calc(100vh-4rem)]
+          lg:translate-x-0 lg:static lg:top-0 lg:h-screen lg:block
         `}
         style={{ width: '280px' }}
       >

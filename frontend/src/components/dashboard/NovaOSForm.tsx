@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { ordemServicoService, Colaborador, TipoAtividade, Setor } from '@/services/ordemServicoService';
+import { ordemServicoService, Colaborador, TipoAtividade, Setor, Cidade } from '@/services/ordemServicoService';
 import { Button } from '@/components/ui/Button';
 import { 
   Save, 
@@ -35,6 +35,7 @@ export function NovaOSForm() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
   const [tiposAtividade, setTiposAtividade] = useState<TipoAtividade[]>([]);
   const [setores, setSetores] = useState<Setor[]>([]);
+  const [cidades, setCidades] = useState<Cidade[]>([]);
 
   const {
     register,
@@ -55,6 +56,7 @@ export function NovaOSForm() {
 
   useEffect(() => {
     loadSetores();
+    loadCidades();
   }, []);
 
   useEffect(() => {
@@ -69,6 +71,15 @@ export function NovaOSForm() {
       setSetores(data.filter(s => s.ativo));
     } catch (error) {
       console.error('Erro ao carregar setores:', error);
+    }
+  };
+
+  const loadCidades = async () => {
+    try {
+      const data = await ordemServicoService.getCidades();
+      setCidades(data.filter(c => c.ativo));
+    } catch (error) {
+      console.error('Erro ao carregar cidades:', error);
     }
   };
 
@@ -240,11 +251,11 @@ export function NovaOSForm() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Selecione a cidade</option>
-                <option value="Porto Alegre">Porto Alegre</option>
-                <option value="Rio Pardo">Rio Pardo</option>
-                <option value="Nova Petrópolis">Nova Petrópolis</option>
-                <option value="Caxias do Sul">Caxias do Sul</option>
-                <option value="Santa Maria">Santa Maria</option>
+                {cidades.map((cidade) => (
+                  <option key={cidade.id} value={cidade.nome}>
+                    {cidade.nome}
+                  </option>
+                ))}
               </select>
               {errors.cidade && (
                 <p className="mt-1 text-sm text-red-600">{errors.cidade.message}</p>

@@ -20,7 +20,7 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
   // Removidos os botões de navegação da navbar - agora apenas no sidebar
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-white shadow-sm border-b fixed top-0 left-0 right-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo e Título */}

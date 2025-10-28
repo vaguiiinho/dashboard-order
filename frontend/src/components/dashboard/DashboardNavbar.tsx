@@ -17,10 +17,7 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const pathname = usePathname();
 
-  const navItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-    { href: '/dashboard/ordem-servico', label: 'Nova OS', icon: PlusCircle },
-  ];
+  // Removidos os botões de navegação da navbar - agora apenas no sidebar
 
   return (
     <header className="bg-white shadow-sm border-b">
@@ -63,29 +60,7 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
             </div>
           </div>
 
-          {/* Navigation Menu */}
-          <nav className="hidden md:flex items-center space-x-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`
-                    flex items-center space-x-2 px-4 py-2 rounded-lg transition-all
-                    ${isActive 
-                      ? 'bg-blue-100 text-blue-700 font-medium' 
-                      : 'text-gray-700 hover:bg-gray-100'
-                    }
-                  `}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Espaço reservado para futuras funcionalidades */}
 
           {/* Menu do Usuário */}
           <div className="flex items-center space-x-4">

@@ -31,7 +31,7 @@ const sectorIcons: Record<string, LucideIcon> = {
 export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentSector = searchParams.get('setor') || 'FTTH';
+  const currentSector = searchParams.get('setor');
   const [setores, setSetores] = useState<Setor[]>([]);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   };
 
   const isCurrentSector = (setorNome: string) => {
-    return currentSector === setorNome;
+    return pathname === '/dashboard/setor' && currentSector === setorNome;
   };
 
   const mainNavItems = [
@@ -125,6 +125,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Dashboards por Setor
                 </h3>
+                <p className="text-xs text-gray-400 mt-1">Clique no setor para ver detalhes</p>
               </div>
               
               {setores.map((setor) => {
@@ -134,17 +135,17 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 return (
                   <Link
                     key={setor.id}
-                    href={`/dashboard?setor=${encodeURIComponent(setor.nome)}`}
+                    href={`/dashboard/setor?setor=${encodeURIComponent(setor.nome)}`}
                     className={`
-                      flex items-center space-x-3 px-4 py-3 rounded-lg mb-1 transition-all group
+                      flex items-center space-x-3 px-4 py-3 rounded-lg mb-1 transition-all group cursor-pointer
                       ${isActive
                         ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-md'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 hover:shadow-sm'
                       }
                     `}
                   >
                     <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-600'}`} />
-                    <span className="text-sm">{setor.nome}</span>
+                    <span className="text-sm font-medium">{setor.nome}</span>
                     {isActive && (
                       <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
                     )}

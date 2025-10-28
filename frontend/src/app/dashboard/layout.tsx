@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar';
+import { Breadcrumb } from '@/components/dashboard/Breadcrumb';
 
 export default function DashboardLayout({
   children,
@@ -19,7 +20,10 @@ export default function DashboardLayout({
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
         
         <div className="flex-1 lg:ml-0 flex flex-col overflow-hidden">
-          {children}
+          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 w-full">
+            <Breadcrumb />
+            {children}
+          </div>
         </div>
       </div>
     </div>

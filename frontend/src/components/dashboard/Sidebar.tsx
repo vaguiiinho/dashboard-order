@@ -70,11 +70,11 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       {/* Sidebar */}
       <aside 
         className={`
-          fixed left-0 top-16 h-[calc(100vh-4rem)] 
+          fixed left-0 top-16 h-[calc(100vh-4rem-2.5rem-1px)]
           bg-white shadow-lg z-40
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 lg:static lg:top-0 lg:h-screen lg:block
+          lg:translate-x-0 lg:fixed lg:top-16 lg:h-[calc(100vh-4rem-2.5rem-1px)] lg:block
         `}
         style={{ width: '280px' }}
       >

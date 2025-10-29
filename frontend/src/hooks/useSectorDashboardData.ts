@@ -113,12 +113,31 @@ export function useSectorDashboardData(sector?: string) {
         }));
       }
 
-      // O.S por Cidade (dados mockados por enquanto)
-      const osPorCidade: Array<{ name: string; value: number; id: string }> = [
-        { id: '1', name: 'Porto Alegre', value: 0 },
-        { id: '2', name: 'Rio Pardo', value: 0 },
-        { id: '3', name: 'Nova Petrópolis', value: 0 }
-      ];
+      // O.S por Cidade (dados do backend)
+      const cidadeMap = new Map<string, string>(); // nome -> id
+      const cidadeStats = new Map<string, number>(); // nome -> quantidade
+      
+      registros.forEach(r => {
+        if (r.cidade) {
+          // Mapear nome -> id
+          if (!cidadeMap.has(r.cidade.nome)) {
+            cidadeMap.set(r.cidade.nome, r.cidade.id);
+          }
+          // Contar quantidade por cidade
+          cidadeStats.set(
+            r.cidade.nome,
+            (cidadeStats.get(r.cidade.nome) || 0) + r.quantidade
+          );
+        }
+      });
+      
+      const osPorCidade = Array.from(cidadeStats.entries())
+        .map(([nome, quantidade]) => ({
+          id: cidadeMap.get(nome) || nome,
+          name: nome,
+          value: quantidade
+        }))
+        .sort((a, b) => b.value - a.value);
 
       setData({
         totalOS,

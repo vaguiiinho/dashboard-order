@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { 
-  Users, 
   Settings, 
   Wrench, 
   Phone, 
@@ -52,9 +51,11 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
   };
 
   const mainNavItems = [
+    { href: '/dashboard/ordem-servico', label: 'Registro de OS', icon: PlusCircle },
     { href: '/dashboard', label: 'Dashboard Geral', icon: LayoutDashboard, exact: true },
-    { href: '/dashboard/ordem-servico', label: 'Nova OS', icon: PlusCircle },
   ];
+
+  const [cadastroOpen, setCadastroOpen] = useState(false);
 
   return (
     <>
@@ -88,6 +89,35 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
           {/* Main Navigation */}
           <nav className="flex-1 overflow-y-auto">
             <div className="p-2">
+              {/* Cadastro Section (primeiro item) */}
+              <div className="mb-2">
+                <button
+                  onClick={() => setCadastroOpen((v) => !v)}
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
+                    cadastroOpen ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <span className="text-sm font-medium">Cadastro</span>
+                  <svg className={`w-4 h-4 transition-transform ${cadastroOpen ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {cadastroOpen && (
+                  <div className="mt-1 space-y-1">
+                    <Link href="/dashboard/cadastro/cidade" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Cidade</Link>
+                    <Link href="/dashboard/cadastro/setor" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Setor</Link>
+                    <Link href="/dashboard/cadastro/colaborador" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Colaborador</Link>
+                    <Link href="/dashboard/cadastro/tipo-atividade" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Tipo de Atividade</Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Divider */}
+              <div className="px-4 py-2">
+                <div className="border-t border-gray-200"></div>
+              </div>
+
               {/* Main Items */}
               {mainNavItems.map((item) => {
                 const Icon = item.icon;
@@ -154,16 +184,8 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
               })}
             </div>
 
-            {/* Footer Actions */}
-            <div className="p-2 border-t border-gray-200 mt-auto">
-              <Link
-                href="/dashboard/usuarios"
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-all"
-              >
-                <Users className="w-5 h-5 text-gray-400" />
-                <span className="text-sm">Usuários</span>
-              </Link>
-            </div>
+            {/* Footer Actions (removido Usuários) */}
+            <div className="p-2 border-t border-gray-200 mt-auto"></div>
           </nav>
         </div>
       </aside>

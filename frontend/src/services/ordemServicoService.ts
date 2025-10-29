@@ -81,11 +81,23 @@ class OrdemServicoService {
     return response.data;
   }
 
+  // Criar setor
+  async createSetor(payload: { nome: string; ativo?: boolean }): Promise<Setor> {
+    const response = await api.post<Setor>('/setores', payload);
+    return response.data;
+  }
+
   // Buscar colaboradores por setor
   async getColaboradores(setor: string): Promise<Colaborador[]> {
     const response = await api.get<Colaborador[]>('/colaboradores', {
       params: { setor },
     });
+    return response.data;
+  }
+
+  // Criar colaborador
+  async createColaborador(payload: { nome: string; setorId: string; ativo?: boolean }): Promise<Colaborador> {
+    const response = await api.post<Colaborador>('/colaboradores', payload);
     return response.data;
   }
 
@@ -97,9 +109,21 @@ class OrdemServicoService {
     return response.data;
   }
 
+  // Criar tipo de atividade
+  async createTipoAtividade(payload: { nome: string; setorId: string; ativo?: boolean }): Promise<TipoAtividade> {
+    const response = await api.post<TipoAtividade>('/tipos-atividade', payload);
+    return response.data;
+  }
+
   // Buscar todas as cidades
   async getCidades(): Promise<Cidade[]> {
     const response = await api.get<Cidade[]>('/registros-os/cidades');
+    return response.data;
+  }
+
+  // Criar cidade
+  async createCidade(payload: { nome: string; estado: string; ativo?: boolean }): Promise<Cidade> {
+    const response = await api.post<Cidade>('/cidades', payload);
     return response.data;
   }
 

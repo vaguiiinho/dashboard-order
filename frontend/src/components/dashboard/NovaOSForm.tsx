@@ -8,8 +8,6 @@ import { ordemServicoService, Colaborador, TipoAtividade, Setor, Cidade } from '
 import { Button } from '@/components/ui/Button';
 import { 
   Save, 
-  Plus, 
-  Trash2, 
   AlertCircle,
   CheckCircle,
   Loader2,

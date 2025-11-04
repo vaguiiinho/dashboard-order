@@ -33,7 +33,7 @@ export function CadastroSetorForm() {
       setSuccess('Setor cadastrado com sucesso');
       reset({ nome: '', ativo: true });
       setTimeout(() => setSuccess(null), 2500);
-    } catch (e) {
+    } catch {
       setError('Não foi possível salvar. Tente novamente.');
     } finally {
       setLoading(false);

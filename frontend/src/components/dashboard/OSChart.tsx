@@ -1,6 +1,6 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 // Cores para os gráficos
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C'];
@@ -40,33 +40,6 @@ function ChartSkeleton() {
   );
 }
 
-// Custom Legend Component para melhor formatação
-function CustomLegend({ payload }: any) {
-  if (!payload || payload.length === 0) return null;
-
-  return (
-    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 px-2">
-      {payload.map((entry: any, index: number) => (
-        <div key={`legend-${index}`} className="flex items-center gap-1.5 text-xs min-w-0">
-          <div 
-            className="w-3 h-3 rounded-sm flex-shrink-0" 
-            style={{ backgroundColor: entry.color }}
-          />
-          <span 
-            className="text-gray-700 font-medium truncate-with-tooltip max-w-[140px]" 
-            title={entry.value}
-          >
-            {entry.value}
-          </span>
-          <span className="text-gray-500 font-normal whitespace-nowrap">
-            ({entry.payload?.value || 0})
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 // Gráfico de Pizza
 export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
   if (loading) {
@@ -77,7 +50,16 @@ export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
     );
   }
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  interface LabelProps {
+    cx: number;
+    cy: number;
+    midAngle: number;
+    innerRadius: number;
+    outerRadius: number;
+    percent: number;
+  }
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: LabelProps) => {
     if (percent < 0.05) return null; // Não mostra label se menor que 5%
     
     const RADIAN = Math.PI / 180;
@@ -100,7 +82,18 @@ export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
     );
   };
 
-  const renderTooltip = ({ active, payload }: any) => {
+  interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      name: string;
+      value: number;
+      payload: {
+        total: number;
+      };
+    }>;
+  }
+
+  const renderTooltip = ({ active, payload }: TooltipProps) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
@@ -196,7 +189,15 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
     );
   }
 
-  const renderTooltip = ({ active, payload, label }: any) => {
+  interface BarTooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      value: number;
+    }>;
+    label?: string;
+  }
+
+  const renderTooltip = ({ active, payload, label }: BarTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg max-w-xs">
@@ -252,8 +253,8 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
                   radius={[4, 4, 0, 0]}
                   maxBarSize={50}
                 >
-                  {dataWithColors.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                  {dataWithColors.map((entry) => (
+                    <Cell key={`cell-${entry.id}`} fill={entry.fill} />
                   ))}
                 </Bar>
               </BarChart>

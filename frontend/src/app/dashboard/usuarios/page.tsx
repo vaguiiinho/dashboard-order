@@ -6,7 +6,7 @@ import { ArrowLeft, Plus, Edit, Trash2, Users, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function UsuariosPage() {
-  const { user, isLoading } = useAuthGuard();
+  const { isLoading } = useAuthGuard();
   const router = useRouter();
 
   if (isLoading) {

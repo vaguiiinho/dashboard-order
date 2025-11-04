@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -34,7 +34,7 @@ export function CadastroCidadeForm() {
       setSuccess('Cidade cadastrada com sucesso');
       reset({ nome: '', estado: '', ativo: true });
       setTimeout(() => setSuccess(null), 2500);
-    } catch (e) {
+    } catch {
       setError('Não foi possível salvar. Tente novamente.');
     } finally {
       setLoading(false);

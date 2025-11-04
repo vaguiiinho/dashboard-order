@@ -13,20 +13,10 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
   Area,
   AreaChart
 } from 'recharts';
 import { 
-  TrendingUp, 
-  Users, 
-  MapPin, 
-  Building2, 
-  Activity,
-  Calendar,
-  RefreshCw,
-  Download,
   BarChart3,
   PieChart as PieChartIcon,
   LineChart as LineChartIcon
@@ -50,18 +40,12 @@ const COLORS = [
   '#F97316', // Orange
 ];
 
-const GRADIENT_COLORS = [
-  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-];
+
 
 export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
   const [relatorio, setRelatorio] = useState<RelatorioResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState('lastMonth');
 
   const loadData = async (startDate?: string, endDate?: string) => {
     try {
@@ -80,8 +64,8 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
     }
   };
 
-  const handleDateRangeChange = (start: string, end: string) => {
-    loadData(start, end);
+  const handleDateRangeChange = (start: string, _end: string) => {
+    loadData(start, _end);
   };
 
   const handleExport = () => {
@@ -150,10 +134,6 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
     .map(([nome, total]) => ({ nome, total }))
     .sort((a, b) => b.total - a.total);
 
-  const cidadesData = Object.entries(relatorio.totalPorCidade)
-    .map(([nome, total]) => ({ nome, total }))
-    .sort((a, b) => b.total - a.total);
-
   // Dados para gráfico de linha (simulação de evolução mensal)
   const evolucaoData = [
     { mes: 'Jan', total: Math.floor(relatorio.totalGeral * 0.8) },
@@ -172,7 +152,7 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
   }: {
     title: string;
     children: React.ReactNode;
-    icon?: any;
+    icon?: React.ComponentType<{ className?: string }>;
     className?: string;
   }) => (
     <div className={`dashboard-card rounded-xl shadow-sm p-6 ${className}`}>

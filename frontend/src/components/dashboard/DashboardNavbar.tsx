@@ -1,11 +1,7 @@
 'use client';
 
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/Button';
-import { LogOut, User, Settings, BarChart3, FileText, PlusCircle } from 'lucide-react';
+import { LogOut, User, Settings } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
 interface DashboardNavbarProps {
@@ -13,9 +9,7 @@ interface DashboardNavbarProps {
 }
 
 export function DashboardNavbar({ userName }: DashboardNavbarProps) {
-  // const { logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const pathname = usePathname();
 
   // Removidos os botões de navegação da navbar - agora apenas no sidebar
 

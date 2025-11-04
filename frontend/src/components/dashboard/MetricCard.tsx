@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Activity, Clock, Users, MapPin } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, Users, MapPin } from 'lucide-react';
 
 interface MetricCardProps {
   title: string;
   value: number;
   previousValue?: number;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   color: 'blue' | 'green' | 'purple' | 'orange' | 'red';
   format?: 'number' | 'currency' | 'percentage';
 }

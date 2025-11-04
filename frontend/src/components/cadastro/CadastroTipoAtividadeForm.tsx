@@ -32,7 +32,7 @@ export function CadastroTipoAtividadeForm() {
       try {
         const data = await ordemServicoService.getSetores();
         setSetores(data.filter(s => s.ativo));
-      } catch (e) {
+      } catch {
         // no-op
       }
     })();
@@ -46,7 +46,7 @@ export function CadastroTipoAtividadeForm() {
       setSuccess('Tipo de atividade cadastrado com sucesso');
       reset({ nome: '', setorId: '', ativo: true });
       setTimeout(() => setSuccess(null), 2500);
-    } catch (e) {
+    } catch {
       setError('Não foi possível salvar. Tente novamente.');
     } finally {
       setLoading(false);

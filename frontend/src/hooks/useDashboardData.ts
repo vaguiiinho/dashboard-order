@@ -102,7 +102,7 @@ export function useDashboardData() {
           colaboradores
         });
         
-      } catch (internalError) {
+      } catch {
         console.log('Sistema interno não disponível, usando IXC API...');
         
         // Fallback para IXC API

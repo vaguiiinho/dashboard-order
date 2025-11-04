@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, Filter, Download, RefreshCw } from 'lucide-react';
+import { Calendar, Download, RefreshCw } from 'lucide-react';
 
 interface DashboardFiltersProps {
   onDateRangeChange: (start: string, end: string) => void;

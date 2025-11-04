@@ -12,9 +12,10 @@ async function bootstrap() {
     transform: true,
   }));
 
-  // Habilitar CORS para desenvolvimento
+  // Habilitar CORS
+  const frontendUrl = process.env.FRONTEND_URL || '*';
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: frontendUrl === '*' ? true : frontendUrl,
     credentials: true,
   });
 

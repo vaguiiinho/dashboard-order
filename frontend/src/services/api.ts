@@ -1,8 +1,12 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+// Se NEXT_PUBLIC_API_URL não estiver definido, usa caminho relativo (produção com nginx)
+// Caso contrário, usa a URL configurada (desenvolvimento)
+const baseURL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? '' : 'http://localhost:3001');
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },

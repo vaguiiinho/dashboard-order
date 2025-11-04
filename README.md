@@ -8,27 +8,152 @@ Sistema de gerenciamento de ordens de serviço desenvolvido com **Clean Architec
 - **Frontend:** Next.js 15 + TypeScript + Tailwind CSS
 - **Autenticação:** JWT com guards Passport
 - **Testes:** Jest + Supertest + Integration Tests
-- **Containerização:** Docker + Docker Compose
+- **Containerização:** Docker + Docker Compose + Nginx
 - **Arquitetura:** Clean Architecture (Use Cases + Repositories)
 
 ---
 
-## 🎯 Quick Start
+## 🚀 Deploy em Produção
 
-### Desenvolvimento
+### Pré-requisitos
+
+- Docker 20.10+
+- Docker Compose 2.0+
+- 4GB RAM mínimo (recomendado: 8GB)
+- 40GB espaço em disco
+
+### Instalação Rápida
 
 ```bash
 # 1. Clone o repositório
 git clone <repository-url>
-cd dashboard_order
+cd dashboard-order
 
-# 2. Execute o setup automático
-chmod +x scripts/setup-dev.sh
-./scripts/setup-dev.sh
+# 2. Configure as variáveis de ambiente
+cp .env.example .env
+nano .env  # Edite com suas configurações
 
 # 3. Inicie os serviços
-cd backend && npm run start:dev    # Backend na porta 3001
-cd frontend && npm run dev         # Frontend na porta 3000
+docker-compose up -d --build
+
+# 4. Verifique os logs
+docker-compose logs -f
+
+# 5. Acesse a aplicação
+# Frontend: http://localhost (ou IP do servidor)
+# Healthcheck: http://localhost/health
+```
+
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+# MySQL Configuration
+MYSQL_ROOT_PASSWORD=senha_segura_aqui
+MYSQL_DATABASE=dashboard_order_db
+
+# JWT Configuration
+JWT_SECRET=seu-jwt-secret-super-seguro-aqui
+JWT_EXPIRES_IN=7d
+
+# Application URLs
+FRONTEND_URL=http://localhost
+NEXT_PUBLIC_API_URL=
+NEXT_PUBLIC_APP_NAME=Dashboard de Ordens de Serviço
+
+# Ports (opcional)
+HTTP_PORT=80
+HTTPS_PORT=443
+```
+
+### Comandos Úteis
+
+```bash
+# Iniciar serviços
+docker-compose up -d
+
+# Parar serviços
+docker-compose down
+
+# Ver logs
+docker-compose logs -f [servico]  # backend, frontend, mysql, nginx
+
+# Reiniciar um serviço
+docker-compose restart [servico]
+
+# Rebuild após mudanças
+docker-compose up -d --build
+
+# Backup do banco de dados
+docker-compose exec mysql mysqldump -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} > backup.sql
+
+# Restaurar backup
+docker-compose exec -T mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} < backup.sql
+
+# Acessar shell do container
+docker-compose exec backend sh
+docker-compose exec mysql mysql -u root -p
+```
+
+### Estrutura dos Serviços
+
+- **Nginx (Porta 80)**: Reverse proxy, expõe frontend e backend
+- **Frontend (Interno: 3000)**: Aplicação Next.js
+- **Backend (Interno: 3001)**: API NestJS
+- **MySQL (Porta 3306)**: Banco de dados (não exposto publicamente)
+
+### Monitoramento
+
+```bash
+# Healthcheck
+curl http://localhost/health
+
+# Status dos containers
+docker-compose ps
+
+# Uso de recursos
+docker stats
+```
+
+### Testar Localmente
+
+Para testar o ambiente de produção localmente:
+
+```bash
+# 1. Configure o .env
+cp .env.example .env
+
+# 2. Inicie os serviços
+docker-compose up -d --build
+
+# 3. Acompanhe os logs
+docker-compose logs -f
+
+# 4. Acesse
+# http://localhost (frontend)
+# http://localhost/health (healthcheck)
+# http://localhost/auth/login (api)
+```
+
+---
+
+## 🎯 Desenvolvimento Local
+
+### Setup Manual
+
+```bash
+# Backend
+cd backend
+npm install
+cp env.example .env
+npm run start:dev    # Porta 3001
+
+# Frontend
+cd frontend
+npm install
+cp env.example .env.local
+npm run dev         # Porta 3000
 ```
 
 ### Testes

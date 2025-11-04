@@ -143,8 +143,8 @@ export function NovaOSForm() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Nova Ordem de Serviço</h1>
-        <p className="text-gray-600">Cadastre uma nova ordem de serviço no sistema</p>
+        <h1 className="text-3xl font-bold dashboard-text-primary mb-2">Nova Ordem de Serviço</h1>
+        <p className="dashboard-text-secondary">Cadastre uma nova ordem de serviço no sistema</p>
       </div>
 
       {/* Mensagens de feedback */}
@@ -173,7 +173,7 @@ export function NovaOSForm() {
       )}
 
       {/* Formulário */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+      <div className="dashboard-card rounded-xl shadow-sm p-8">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Setor */}

@@ -71,7 +71,7 @@ function CustomLegend({ payload }: any) {
 export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="dashboard-card p-6 rounded-lg shadow">
         <ChartSkeleton />
       </div>
     );
@@ -122,8 +122,8 @@ export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
   const dataWithTotal = data.map(item => ({ ...item, total }));
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow chart-card pie-chart-container">
-      <h3 className="text-lg font-medium text-gray-900 mb-3 text-center">{title}</h3>
+    <div className="dashboard-card p-4 rounded-lg shadow chart-card pie-chart-container">
+      <h3 className="text-lg font-medium dashboard-card-title mb-3 text-center">{title}</h3>
       {data.length === 0 ? (
         <div className="flex-1 flex items-center justify-center text-gray-500 min-h-[300px]">
           Nenhum dado encontrado para o período selecionado
@@ -190,7 +190,7 @@ export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
 export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="dashboard-card p-6 rounded-lg shadow">
         <ChartSkeleton />
       </div>
     );
@@ -218,8 +218,8 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
   }));
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow chart-card bar-chart-container">
-      <h3 className="text-lg font-medium text-gray-900 mb-4 text-center">{title}</h3>
+    <div className="dashboard-card p-4 rounded-lg shadow chart-card bar-chart-container">
+      <h3 className="text-lg font-medium dashboard-card-title mb-4 text-center">{title}</h3>
       {data.length === 0 ? (
         <div className="h-80 flex items-center justify-center text-gray-500">
           Nenhum dado encontrado para o período selecionado
@@ -242,7 +242,8 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
                 />
                 <YAxis 
                   fontSize={12}
-                  stroke="#6B7280"
+                  stroke="#1e40af"
+                  tick={{ fill: '#1e40af' }}
                   tickFormatter={(value) => value.toString()}
                 />
                 <Tooltip content={renderTooltip} />
@@ -260,8 +261,8 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
           </div>
           
           {/* Legenda sempre visível com cores correspondentes */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-sm font-medium text-gray-700 mb-2">Referência:</p>
+          <div className="mt-4 pt-4 border-t border-blue-200">
+            <p className="text-sm font-medium dashboard-card-title mb-2">Referência:</p>
             <div className="reference-grid">
               {dataWithColors.map((item, index) => (
                 <div key={item.id} className="flex items-center gap-2">
@@ -286,7 +287,7 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
 export function OSCard({ title, value, loading = false, icon }: OSCardProps) {
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="dashboard-card p-6 rounded-lg shadow">
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded mb-2"></div>
           <div className="h-8 bg-gray-200 rounded"></div>
@@ -296,7 +297,7 @@ export function OSCard({ title, value, loading = false, icon }: OSCardProps) {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
+    <div className="dashboard-card p-6 rounded-lg shadow">
       <div className="flex items-center">
         {icon && (
           <div className="flex-shrink-0 mr-4">

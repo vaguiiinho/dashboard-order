@@ -71,18 +71,18 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
       <aside 
         className={`
           fixed left-0 top-16 h-[calc(100vh-4rem-2.5rem-1px)]
-          bg-white shadow-lg z-40
+          dashboard-background shadow-lg z-40
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:translate-x-0 lg:fixed lg:top-16 lg:h-[calc(100vh-4rem-2.5rem-1px)] lg:block
         `}
         style={{ width: '280px' }}
       >
-        <div className="h-full flex flex-col border-r border-gray-200">
+        <div className="h-full flex flex-col border-r border-blue-800">
           {/* Header */}
-          <div className="p-4 border-b border-gray-200">
-            <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
-              Navegação
+          <div className="p-4 border-b border-blue-800">
+            <h2 className="text-sm font-semibold dashboard-text-primary uppercase tracking-wider">
+              NAVEGAÇÃO
             </h2>
           </div>
 
@@ -94,7 +94,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 <button
                   onClick={() => setCadastroOpen((v) => !v)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all ${
-                    cadastroOpen ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                    cadastroOpen ? 'bg-blue-700 text-white border border-blue-600' : 'dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary'
                   }`}
                 >
                   <span className="text-sm font-medium">Cadastro</span>
@@ -105,17 +105,17 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
                 {cadastroOpen && (
                   <div className="mt-1 space-y-1">
-                    <Link href="/dashboard/cadastro/cidade" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Cidade</Link>
-                    <Link href="/dashboard/cadastro/setor" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Setor</Link>
-                    <Link href="/dashboard/cadastro/colaborador" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Colaborador</Link>
-                    <Link href="/dashboard/cadastro/tipo-atividade" className="block px-6 py-2 text-sm rounded-lg text-gray-700 hover:bg-gray-50">Tipo de Atividade</Link>
+                    <Link href="/dashboard/cadastro/cidade" className="block px-6 py-2 text-sm rounded-lg dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary transition-colors">Cidade</Link>
+                    <Link href="/dashboard/cadastro/setor" className="block px-6 py-2 text-sm rounded-lg dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary transition-colors">Setor</Link>
+                    <Link href="/dashboard/cadastro/colaborador" className="block px-6 py-2 text-sm rounded-lg dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary transition-colors">Colaborador</Link>
+                    <Link href="/dashboard/cadastro/tipo-atividade" className="block px-6 py-2 text-sm rounded-lg dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary transition-colors">Tipo de Atividade</Link>
                   </div>
                 )}
               </div>
 
               {/* Divider */}
               <div className="px-4 py-2">
-                <div className="border-t border-gray-200"></div>
+                <div className="border-t border-blue-800"></div>
               </div>
 
               {/* Main Items */}
@@ -132,12 +132,12 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     className={`
                       flex items-center space-x-3 px-4 py-3 rounded-lg mb-1 transition-all
                       ${isActive
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-blue-700 text-white font-medium border border-blue-600'
+                        : 'dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary'
                       }
                     `}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
                     <span className="text-sm">{item.label}</span>
                   </Link>
                 );
@@ -146,16 +146,16 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
             {/* Divider */}
             <div className="px-4 py-2">
-              <div className="border-t border-gray-200"></div>
+              <div className="border-t border-blue-800"></div>
             </div>
 
             {/* Sectors Section */}
             <div className="p-2">
               <div className="px-4 py-2">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Dashboards por Setor
+                <h3 className="text-xs font-semibold dashboard-text-tertiary uppercase tracking-wider">
+                  DASHBOARDS POR SETOR
                 </h3>
-                <p className="text-xs text-gray-400 mt-1">Clique no setor para ver detalhes</p>
+                <p className="text-xs dashboard-text-secondary mt-1">Clique no setor para ver detalhes</p>
               </div>
               
               {setores.map((setor) => {
@@ -170,11 +170,11 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
                       flex items-center space-x-3 px-4 py-3 rounded-lg mb-1 transition-all group cursor-pointer
                       ${isActive
                         ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-md'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900 hover:shadow-sm'
+                        : 'dashboard-text-secondary hover:bg-blue-900 hover:dashboard-text-primary hover:shadow-sm'
                       }
                     `}
                   >
-                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-600'}`} />
+                    <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'dashboard-text-tertiary group-hover:text-white'}`} />
                     <span className="text-sm font-medium">{setor.nome}</span>
                     {isActive && (
                       <div className="ml-auto w-2 h-2 bg-white rounded-full"></div>
@@ -185,7 +185,7 @@ export function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </div>
 
             {/* Footer Actions (removido Usuários) */}
-            <div className="p-2 border-t border-gray-200 mt-auto"></div>
+            <div className="p-2 border-t border-blue-800 mt-auto"></div>
           </nav>
         </div>
       </aside>

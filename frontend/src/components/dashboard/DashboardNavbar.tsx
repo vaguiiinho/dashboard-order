@@ -20,13 +20,13 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
   // Removidos os botões de navegação da navbar - agora apenas no sidebar
 
   return (
-    <header className="bg-white shadow-sm border-b fixed top-0 left-0 right-0 z-30">
+    <header className="dashboard-background shadow-sm border-b border-blue-800 fixed top-0 left-0 right-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo e Título */}
           <div className="flex items-center space-x-4">
             {/* Placeholder para Logo */}
-            <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center">
               <div className="w-8 h-8 relative">
                 {/* Será substituído por uma imagem real */}
                 <Image
@@ -51,10 +51,10 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
             </div>
             
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold dashboard-text-primary">
                 BI - Monitoramento de Produtividade de O.S
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm dashboard-text-secondary">
                 Business Intelligence - Tubaron
               </p>
             </div>
@@ -68,14 +68,14 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-3 text-sm text-gray-700 hover:text-gray-900 focus:outline-none"
+                className="flex items-center space-x-3 text-sm dashboard-text-secondary hover:dashboard-text-primary focus:outline-none transition-colors"
               >
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4" />
+                <div className="w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 dashboard-text-primary" />
                 </div>
                 <div className="hidden md:block text-left">
-                  <div className="font-medium">{userName || 'Usuário'}</div>
-                  <div className="text-xs text-gray-500">Sessão ativa</div>
+                  <div className="font-medium dashboard-text-primary">{userName || 'Usuário'}</div>
+                  <div className="text-xs dashboard-text-secondary">Sessão ativa</div>
                 </div>
                 <svg
                   className={`w-4 h-4 transform transition-transform ${showUserMenu ? 'rotate-180' : ''}`}

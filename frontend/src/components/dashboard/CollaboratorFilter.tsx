@@ -54,7 +54,7 @@ export function CollaboratorFilter({
 
   if (loading) {
     return (
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="dashboard-card p-4 rounded-lg shadow">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Filtro por Colaborador</h3>
         <div className="animate-pulse">
           <div className="h-4 bg-gray-200 rounded mb-2"></div>
@@ -65,7 +65,7 @@ export function CollaboratorFilter({
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow">
+    <div className="dashboard-card p-4 rounded-lg shadow">
       <h3 className="text-lg font-medium text-gray-900 mb-4">Filtro por Colaborador</h3>
       
       {/* Botão para expandir/colapsar */}

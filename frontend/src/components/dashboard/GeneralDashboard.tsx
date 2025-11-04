@@ -175,21 +175,21 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
     icon?: any;
     className?: string;
   }) => (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 ${className}`}>
+    <div className={`dashboard-card rounded-xl shadow-sm p-6 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        {Icon && <Icon className="w-5 h-5 text-gray-400" />}
+        <h3 className="text-lg font-semibold dashboard-card-title">{title}</h3>
+        {Icon && <Icon className="w-5 h-5 text-blue-500" />}
       </div>
       {children}
     </div>
   );
 
   return (
-    <div className={`space-y-6 ${className}`}>
+    <div className={`space-y-6 ${className} relative z-10`}>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard Geral</h1>
-        <p className="text-gray-600 text-lg">Visão completa dos dados de ordem de serviço</p>
+        <h1 className="text-4xl font-bold dashboard-text-primary mb-2">Dashboard Geral</h1>
+        <p className="dashboard-text-secondary text-lg">Visão completa dos dados de ordem de serviço</p>
       </div>
 
       {/* Filtros */}
@@ -252,8 +252,14 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
                   angle={-45}
                   textAnchor="end"
                   height={80}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
                 />
-                <YAxis fontSize={12} />
+                <YAxis 
+                  fontSize={12}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
+                />
                 <Tooltip 
                   formatter={(value: number) => [Number(value).toLocaleString('pt-BR'), 'Quantidade']}
                 />
@@ -278,8 +284,17 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="mes" fontSize={12} />
-                <YAxis fontSize={12} />
+                <XAxis 
+                  dataKey="mes" 
+                  fontSize={12}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
+                />
+                <YAxis 
+                  fontSize={12}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
+                />
                 <Tooltip 
                   formatter={(value: number) => [Number(value).toLocaleString('pt-BR'), 'Total']}
                 />
@@ -305,8 +320,20 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis type="number" fontSize={12} />
-                <YAxis dataKey="nome" type="category" fontSize={12} width={120} />
+                <XAxis 
+                  type="number" 
+                  fontSize={12}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
+                />
+                <YAxis 
+                  dataKey="nome" 
+                  type="category" 
+                  fontSize={12} 
+                  width={120}
+                  tick={{ fill: '#1e40af' }}
+                  stroke="#1e40af"
+                />
                 <Tooltip 
                   formatter={(value: number) => [Number(value).toLocaleString('pt-BR'), 'Quantidade']}
                 />
@@ -318,49 +345,49 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
       </div>
 
       {/* Tabela de resumo */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Resumo por Setor</h3>
+      <div className="dashboard-card rounded-xl shadow-sm">
+        <div className="p-6 border-b border-blue-200">
+          <h3 className="text-lg font-semibold dashboard-card-title">Resumo por Setor</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="dashboard-table-header">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                   Setor
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                   Total de O.S
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                   Colaboradores
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                   Percentual
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-blue-100">
               {setoresData.map((setor, index) => (
-                <tr key={setor.nome} className="hover:bg-gray-50">
+                <tr key={setor.nome} className="hover:bg-blue-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div 
-                        className="w-3 h-3 rounded-full mr-3" 
+                        className="w-3 h-3 rounded-full mr-3 shadow-sm" 
                         style={{ backgroundColor: COLORS[index % COLORS.length] }}
                       />
-                      <div className="text-sm font-medium text-gray-900">{setor.nome}</div>
+                      <div className="text-sm font-medium dashboard-table-text">{setor.nome}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold dashboard-table-text">
                     {typeof window === 'undefined' ? setor.total : Number(setor.total).toLocaleString('pt-BR')}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm dashboard-table-text">
                     {Object.keys(relatorio.totalPorColaborador).filter(col => 
                       relatorio.registros.some(r => r.setor.nome === setor.nome && r.colaborador.nome === col)
                     ).length}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dashboard-table-text">
                     {((setor.total / relatorio.totalGeral) * 100).toFixed(1)}%
                   </td>
                 </tr>

@@ -41,7 +41,7 @@ export function DashboardFilters({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+    <div className="dashboard-card rounded-xl shadow-sm p-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         {/* Filtros de Data */}
         <div className="flex flex-col sm:flex-row gap-4">

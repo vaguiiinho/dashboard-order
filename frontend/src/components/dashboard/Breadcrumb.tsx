@@ -34,10 +34,10 @@ export function Breadcrumb() {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+    <nav className="flex items-center space-x-2 text-sm dashboard-text-secondary mb-6">
       <Link 
         href="/dashboard" 
-        className="flex items-center hover:text-gray-700 transition-colors"
+        className="flex items-center transition-colors"
       >
         <Home className="w-4 h-4 mr-1" />
         Início
@@ -45,16 +45,16 @@ export function Breadcrumb() {
       
       {breadcrumbs.map((item, index) => (
         <div key={index} className="flex items-center">
-          <ChevronRight className="w-4 h-4 mx-2 text-gray-400" />
+          <ChevronRight className="w-4 h-4 mx-2 dashboard-text-tertiary" />
           {item.href ? (
             <Link 
               href={item.href} 
-              className="hover:text-gray-700 transition-colors"
+              className="transition-colors"
             >
               {item.label}
             </Link>
           ) : (
-            <span className="text-gray-900 font-medium">{item.label}</span>
+            <span className="dashboard-text-primary font-medium">{item.label}</span>
           )}
         </div>
       ))}

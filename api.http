@@ -96,6 +96,7 @@ Content-Type: application/json
     "grid_param": "[{\"TB\":\"su_oss_chamado.id_cidade\", \"OP\" : \"=\", \"P\" : \"4745\"},{\"TB\":\"su_oss_chamado.status\", \"OP\" : \"=\", \"P\" : \"F\"},{\"TB\":\"su_oss_chamado.data_abertura\", \"OP\" : \"BE\", \"P\" : \"2025-08-01 00:00:00\", \"P2\" : \"2025-08-08 23:59:59\"}]"
 }
 
+
 #Retorno
 # {
 #   "total": 208,
@@ -123,11 +124,7 @@ ixcsoft:listar
 Content-Type: application/json
 
 {
-    "qtype": "su_oss_assunto.id",
-    "query": "1056,14", 
-    "oper": "IN",
-    "page": "1",
-    "op": "20"
+    "grid_param": "[{\"TB\":\"su_oss_assunto.ativo\", \"OP\" : \"=\", \"P\" : \"S\"},{\"TB\":\"su_oss_assunto.setor_su_oss_chamado\", \"OP\" : \"=\", \"P\" : \"5\"}]"
 }
 
 #Retorno

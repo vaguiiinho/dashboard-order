@@ -13,14 +13,14 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen dashboard-background">
       <DashboardNavbar />
       
       <div className="flex pt-16">
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
 
         <div className="flex-1 lg:ml-[280px] flex flex-col">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-[calc(100vh-4rem-2.5rem-1px)] overflow-y-auto pt-6 pb-2">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-[calc(100vh-4rem-2.5rem-1px)] overflow-y-auto pt-6 pb-2 relative z-10">
             <Breadcrumb />
             {children}
           </div>

@@ -43,8 +43,8 @@ export function CadastroSetorForm() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Cadastro de Setor</h1>
-        <p className="text-gray-600">Defina setores para organização de atividades</p>
+        <h1 className="text-3xl font-bold dashboard-text-primary mb-2">Cadastro de Setor</h1>
+        <p className="dashboard-text-secondary">Defina setores para organização de atividades</p>
       </div>
 
       {success && (
@@ -65,7 +65,7 @@ export function CadastroSetorForm() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="dashboard-card rounded-xl shadow-sm p-6">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Nome do Setor *</label>

@@ -77,13 +77,13 @@ export function MetricCard({
   const trend = calculateTrend();
 
   return (
-    <div className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-500 transform ${
+    <div className={`bg-gradient-to-r ${colorClasses[color].bg} rounded-xl shadow-lg overflow-hidden transition-all duration-500 transform ${
       isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-    }`}>
-      <div className={`bg-gradient-to-r ${colorClasses[color].bg} p-6`}>
+    } hover:shadow-xl hover:scale-105`}>
+      <div className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-white/80 text-sm font-medium mb-1">{title}</p>
+            <p className="text-white/90 text-sm font-medium mb-1">{title}</p>
             <p className="text-white text-3xl font-bold mb-2">
               {formatValue(value)}
             </p>
@@ -100,7 +100,7 @@ export function MetricCard({
               </div>
             )}
           </div>
-          <div className="bg-white/20 rounded-full p-3">
+          <div className="bg-white/20 rounded-full p-3 backdrop-blur-sm">
             <Icon className={`w-6 h-6 ${colorClasses[color].icon}`} />
           </div>
         </div>

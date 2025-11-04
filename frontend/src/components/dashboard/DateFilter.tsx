@@ -56,7 +56,7 @@ export function DateFilter({ startDate, endDate, onDateChange }: DateFilterProps
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow space-y-4">
+    <div className="dashboard-card p-4 rounded-lg shadow space-y-4">
       <h3 className="text-lg font-medium text-gray-900">Filtro de Período</h3>
       
       {/* Filtros rápidos */}

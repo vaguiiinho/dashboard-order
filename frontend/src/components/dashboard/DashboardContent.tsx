@@ -38,14 +38,14 @@ export function DashboardContent({
   sector
 }: DashboardContentProps) {
   return (
-    <main className="flex-1 overflow-y-auto bg-gray-50">
+    <main className="flex-1 overflow-y-auto">
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {/* Header with sector info */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold dashboard-text-primary mb-2">
             {sector ? `Dashboard - ${sector}` : 'Dashboard Geral'}
           </h1>
-          <p className="text-gray-600">
+          <p className="dashboard-text-secondary">
             Análise de produtividade e desempenho
           </p>
         </div>
@@ -68,10 +68,10 @@ export function DashboardContent({
         {/* Action bar */}
         <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold dashboard-text-primary">
               Estatísticas em Tempo Real
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm dashboard-text-secondary mt-1">
               Última atualização: <ClientTime />
             </p>
           </div>

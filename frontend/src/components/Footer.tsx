@@ -3,7 +3,7 @@
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   return (
-    <footer className="fixed bottom-0 left-0 right-0 w-full border-t border-gray-200 bg-white text-gray-600 z-30 h-10">
+    <footer className="fixed bottom-0 left-0 right-0 w-full border-t border-blue-900 dashboard-background dashboard-text-secondary z-30 h-10">
       <div className="mx-auto max-w-7xl px-4 h-10 text-sm sm:flex sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <span className="whitespace-nowrap">© {currentYear}</span>

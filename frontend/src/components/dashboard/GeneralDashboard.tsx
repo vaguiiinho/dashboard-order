@@ -64,6 +64,7 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleDateRangeChange = (start: string, _end: string) => {
     loadData(start);
   };

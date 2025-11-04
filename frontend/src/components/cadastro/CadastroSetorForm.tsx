@@ -10,7 +10,7 @@ import { CheckCircle, AlertCircle, Save } from 'lucide-react';
 
 const setorSchema = z.object({
   nome: z.string().min(2, 'Informe o nome do setor'),
-  ativo: z.boolean().optional().default(true),
+  ativo: z.boolean(),
 });
 
 type SetorForm = z.infer<typeof setorSchema>;

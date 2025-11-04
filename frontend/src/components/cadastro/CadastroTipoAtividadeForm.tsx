@@ -11,7 +11,7 @@ import { CheckCircle, AlertCircle, Save } from 'lucide-react';
 const tipoSchema = z.object({
   nome: z.string().min(2, 'Informe o nome do tipo de atividade'),
   setorId: z.string().min(1, 'Selecione o setor'),
-  ativo: z.boolean().optional().default(true),
+  ativo: z.boolean(),
 });
 
 type TipoForm = z.infer<typeof tipoSchema>;

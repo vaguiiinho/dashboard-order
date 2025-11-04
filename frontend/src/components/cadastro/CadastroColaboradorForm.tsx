@@ -11,7 +11,7 @@ import { CheckCircle, AlertCircle, Save } from 'lucide-react';
 const colaboradorSchema = z.object({
   nome: z.string().min(2, 'Informe o nome do colaborador'),
   setorId: z.string().min(1, 'Selecione o setor'),
-  ativo: z.boolean().optional().default(true),
+  ativo: z.boolean(),
 });
 
 type ColaboradorForm = z.infer<typeof colaboradorSchema>;

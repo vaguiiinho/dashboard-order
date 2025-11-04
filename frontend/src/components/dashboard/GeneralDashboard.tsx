@@ -47,7 +47,7 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadData = async (startDate?: string, endDate?: string) => {
+  const loadData = async (startDate?: string) => {
     try {
       setLoading(true);
       setError(null);
@@ -65,7 +65,7 @@ export function GeneralDashboard({ className = '' }: GeneralDashboardProps) {
   };
 
   const handleDateRangeChange = (start: string, _end: string) => {
-    loadData(start, _end);
+    loadData(start);
   };
 
   const handleExport = () => {

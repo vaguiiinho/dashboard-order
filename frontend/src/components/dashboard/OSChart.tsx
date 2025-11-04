@@ -265,7 +265,7 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
           <div className="mt-4 pt-4 border-t border-blue-200">
             <p className="text-sm font-medium dashboard-card-title mb-2">Referência:</p>
             <div className="reference-grid">
-              {dataWithColors.map((item, index) => (
+              {dataWithColors.map((item) => (
                 <div key={item.id} className="flex items-center gap-2">
                   <div 
                     className="w-3 h-3 rounded-sm flex-shrink-0" 

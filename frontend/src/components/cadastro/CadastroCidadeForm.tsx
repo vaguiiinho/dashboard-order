@@ -11,7 +11,7 @@ import { CheckCircle, AlertCircle, Save } from 'lucide-react';
 const cidadeSchema = z.object({
   nome: z.string().min(2, 'Informe o nome da cidade'),
   estado: z.string().length(2, 'UF deve ter 2 letras').toUpperCase(),
-  ativo: z.boolean().optional().default(true),
+  ativo: z.boolean().default(true),
 });
 
 type CidadeForm = z.infer<typeof cidadeSchema>;

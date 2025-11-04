@@ -29,11 +29,11 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (_data: LoginFormData) => {
+  const onSubmit = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      // await login(_data);
+      // await login(data);
       router.push('/dashboard');
     } catch (err) {
       console.error('Erro no login:', err);

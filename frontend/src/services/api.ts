@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 
 // Se NEXT_PUBLIC_API_URL não estiver definido, usa caminho relativo (produção com nginx)
 // Caso contrário, usa a URL configurada (desenvolvimento)
+// IMPORTANTE: Em produção com Docker, deixe NEXT_PUBLIC_API_URL vazio para usar Nginx como proxy
 const baseURL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? '' : 'http://localhost:3001');
 
 const api = axios.create({

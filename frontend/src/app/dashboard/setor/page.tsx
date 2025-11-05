@@ -1,10 +1,13 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSectorDashboardData } from '@/hooks/useSectorDashboardData';
 import { DashboardContent } from '@/components/dashboard/DashboardContent';
 
-export default function SectorDashboardPage() {
+export const dynamic = 'force-dynamic';
+
+function SectorDashboardContent() {
   const searchParams = useSearchParams();
   const sector = searchParams.get('setor') || undefined;
   
@@ -29,5 +32,13 @@ export default function SectorDashboardPage() {
       onRefresh={refreshData}
       sector={sector}
     />
+  );
+}
+
+export default function SectorDashboardPage() {
+  return (
+    <Suspense fallback={<div className="p-4">Carregando...</div>}>
+      <SectorDashboardContent />
+    </Suspense>
   );
 }

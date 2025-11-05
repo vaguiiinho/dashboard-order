@@ -46,14 +46,6 @@ export function useDashboardData() {
     colaboradoresSelecionados: []
   });
 
-  const formatDateForAPI = (date: string) => {
-    return `${date} 00:00:00`;
-  };
-
-  const formatEndDateForAPI = (date: string) => {
-    return `${date} 23:59:59`;
-  };
-
   const loadDashboardData = useCallback(async () => {
     try {
       setLoading(true);
@@ -103,9 +95,10 @@ export function useDashboardData() {
         });
         
       } catch {
-        console.log('Sistema interno não disponível, usando IXC API...');
-        
-        // Fallback para IXC API
+        console.log('Sistema interno não disponível');
+        // TODO: Implementar fallback para IXC API se necessário
+        // Fallback para IXC API desabilitado - ixcApiService não existe
+        /*
         const startDate = formatDateForAPI(filters.dataInicio);
         const endDate = formatEndDateForAPI(filters.dataFim);
 
@@ -183,6 +176,7 @@ export function useDashboardData() {
           osPorColaborador,
           colaboradores
         });
+        */
       }
 
     } catch (err) {
@@ -191,7 +185,7 @@ export function useDashboardData() {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, []);
 
   // Carregar dados na inicialização e quando os filtros mudarem
   useEffect(() => {

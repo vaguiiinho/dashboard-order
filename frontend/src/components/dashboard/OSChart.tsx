@@ -51,16 +51,16 @@ export function OSPieChart({ data, title, loading = false }: OSPieChartProps) {
   }
 
   interface LabelProps {
-    cx: number;
-    cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
+    cx?: number;
+    cy?: number;
+    midAngle?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    percent?: number;
   }
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: LabelProps) => {
-    if (percent < 0.05) return null; // Não mostra label se menor que 5%
+  const renderCustomizedLabel = ({ cx = 0, cy = 0, midAngle = 0, innerRadius = 0, outerRadius = 0, percent = 0 }: LabelProps) => {
+    if (!percent || percent < 0.05) return null; // Não mostra label se menor que 5%
     
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
@@ -194,7 +194,7 @@ export function OSBarChart({ data, title, loading = false }: OSBarChartProps) {
     payload?: Array<{
       value: number;
     }>;
-    label?: string;
+    label?: string | number;
   }
 
   const renderTooltip = ({ active, payload, label }: BarTooltipProps) => {

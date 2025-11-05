@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { ArrowLeft, Plus, Edit, Trash2, Users, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default function UsuariosPage() {
   const { isLoading } = useAuthGuard();
   const router = useRouter();

@@ -32,7 +32,10 @@ export function DashboardNavbar({ userName }: DashboardNavbarProps) {
                   onError={(e) => {
                     // Fallback caso a imagem não exista
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling!.style.display = 'block';
+                    const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (nextElement) {
+                      nextElement.style.display = 'block';
+                    }
                   }}
                 />
                 <div 

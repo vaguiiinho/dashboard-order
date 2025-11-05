@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 export function useAuthGuard() {
-  const { user, isLoading } = useAuth();
+  const context = useAuth();
   const router = useRouter();
+
+  const user = context?.user ?? null;
+  const isLoading = context?.isLoading ?? false;
 
   useEffect(() => {
     if (!isLoading && !user) {

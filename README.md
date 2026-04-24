@@ -6,10 +6,8 @@ Sistema de gerenciamento de ordens de serviço desenvolvido com **Clean Architec
 
 - **Backend:** NestJS + TypeScript + Prisma ORM + MySQL
 - **Frontend:** Next.js 15 + TypeScript + Tailwind CSS
-- **Autenticação:** JWT com guards Passport
-- **Testes:** Jest + Supertest + Integration Tests
 - **Containerização:** Docker + Docker Compose + Nginx
-- **Arquitetura:** Clean Architecture (Use Cases + Repositories)
+
 
 ---
 
@@ -53,9 +51,6 @@ Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 MYSQL_ROOT_PASSWORD=senha_segura_aqui
 MYSQL_DATABASE=dashboard_order_db
 
-# JWT Configuration
-JWT_SECRET=seu-jwt-secret-super-seguro-aqui
-JWT_EXPIRES_IN=7d
 
 # Application URLs
 FRONTEND_URL=http://localhost
@@ -85,11 +80,6 @@ docker-compose restart [servico]
 # Rebuild após mudanças
 docker-compose up -d --build
 
-# Backup do banco de dados
-docker-compose exec mysql mysqldump -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} > backup.sql
-
-# Restaurar backup
-docker-compose exec -T mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} ${MYSQL_DATABASE} < backup.sql
 
 # Acessar shell do container
 docker-compose exec backend sh
@@ -133,44 +123,7 @@ docker-compose logs -f
 # 4. Acesse
 # http://localhost (frontend)
 # http://localhost/health (healthcheck)
-# http://localhost/auth/login (api)
 ```
-
----
-
-## 🎯 Desenvolvimento Local
-
-### Setup Manual
-
-```bash
-# Backend
-cd backend
-npm install
-cp env.example .env
-npm run start:dev    # Porta 3001
-
-# Frontend
-cd frontend
-npm install
-cp env.example .env.local
-npm run dev         # Porta 3000
-```
-
-### Testes
-
-```bash
-# Configurar ambiente de testes
-chmod +x scripts/setup-test.sh
-./scripts/setup-test.sh
-
-# Executar testes
-cd backend
-npm run test:unit        # Testes unitários
-npm run test:integration # Testes de integração
-npm run test:all         # Todos os testes
-```
-
----
 
 ## 🏗️ Arquitetura do Projeto
 
@@ -179,7 +132,6 @@ dashboard_order/
 ├── 🔧 backend/                 # API NestJS
 │   ├── src/
 │   │   ├── modules/
-│   │   │   ├── auth/          # 🔐 Autenticação JWT
 │   │   │   └── usuarios/      # 👤 Módulo de Usuários (CRUD completo)
 │   │   │       ├── controllers/     # HTTP endpoints
 │   │   │       ├── use-cases/       # Lógica de negócio
@@ -194,7 +146,6 @@ dashboard_order/
 │   ├── src/
 │   │   ├── app/              # App Router do Next.js
 │   │   ├── components/       # Componentes React
-│   │   ├── context/          # Context API (Auth)
 │   │   └── services/         # Serviços de API
 ├── 🐳 Docker files            # Containerização
 ├── 📜 scripts/               # Scripts de automação
@@ -205,12 +156,6 @@ dashboard_order/
 
 ## 🛠️ Scripts Disponíveis
 
-### Desenvolvimento
-```bash
-./scripts/setup-dev.sh    # Configuração completa de desenvolvimento
-./scripts/setup-test.sh   # Configuração de ambiente de testes
-./scripts/clean-all.sh    # Limpeza completa (containers, volumes, dados)
-```
 
 ### Backend
 ```bash
@@ -238,139 +183,12 @@ docker-compose up -d      # Stack completa (frontend + backend + banco)
 
 ### Variáveis de Ambiente
 
-**Backend (`backend/env.template` → `backend/.env`):**
+**Backend (`.env`):**
 ```env
 DATABASE_URL="mysql://dashboard_user:dashboard_password@localhost:3306/dashboard_order_db"
 TEST_DATABASE_URL="mysql://test_user:test_password@localhost:3307/dashboard_order_test"
-JWT_SECRET="your-super-secret-jwt-key"
-JWT_EXPIRES_IN="24h"
-PORT=3001
+
 NODE_ENV=development
 ```
 
-### Credenciais Padrão
-- **Email:** admin@exemplo.com
-- **Senha:** admin123
 
----
-
-## 🧪 Estratégia de Testes
-
-### Tipos de Testes
-
-1. **🔬 Testes Unitários** (`*.spec.ts`)
-   - Use Cases isolados com mocks
-   - Entidades de domínio
-   - Validações e regras de negócio
-
-2. **🔗 Testes de Integração** (`*.integration.spec.ts`)
-   - Repositories com banco real
-   - Fluxos completos de dados
-   - Constraints e relacionamentos
-
-3. **🌐 Testes E2E** (`*.e2e-spec.ts`)
-   - APIs completas
-   - Fluxos de usuário
-   - Autenticação
-
-### Cobertura Atual
-```
-✅ Entities: 100% (42/42 testes)
-✅ Use Cases: 100% (79/79 testes)  
-✅ Repositories: 100% (40+ testes integração)
-📊 Coverage: 80%+ statements, branches, functions
-```
-
----
-
-## 🌐 Endpoints API
-
-### Autenticação
-```http
-POST /auth/login           # Login JWT
-```
-
-### Usuários (CRUD Completo)
-```http
-GET    /usuarios           # Listar usuários
-GET    /usuarios/:id       # Buscar por ID
-POST   /usuarios           # Criar usuário
-PATCH  /usuarios/:id       # Atualizar usuário
-DELETE /usuarios/:id       # Remover usuário
-```
-
-**Headers obrigatórios:**
-```
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
-```
-
----
-
-## 🎯 Template para Projetos IA
-
-Esta estrutura foi otimizada para desenvolvimento assistido por IA:
-
-### ✅ Características
-- **Clean Architecture** bem definida
-- **Separação clara** de responsabilidades
-- **Testes abrangentes** e automáticos
-- **Docker** para consistência de ambiente
-- **Scripts automatizados** para setup
-- **Documentação consolidada**
-- **Padrões consistentes** de código
-
-### 🚀 Para Novos Projetos
-1. Clone este template
-2. Execute `./scripts/setup-dev.sh`
-3. Adapte os módulos existentes
-4. Use a estrutura de `usuarios/` como referência
-5. Mantenha os padrões de testes
-
-### 🤖 Prompts Recomendados para IA
-```
-"Crie um módulo seguindo a estrutura do módulo usuarios, incluindo:
-- Controller com CRUD completo
-- Use cases com validações
-- Repository com interface
-- Entidades de domínio
-- DTOs de entrada e saída
-- Testes unitários e de integração"
-```
-
----
-
-## 📚 Recursos Adicionais
-
-### Documentação Técnica
-- [Prisma Schema](./backend/prisma/schema.prisma)
-- [Plano de Ação](./docs/plan_action.md)
-- [Integração IXC](./INTEGRACAO_IXC.md)
-
-### Ferramentas de Debug
-- **Adminer:** http://localhost:8080 (administração do banco)
-- **API Testing:** Use arquivo [api.http](./api.http)
-
-### Monitoramento
-- **Backend:** http://localhost:3001/health (health check)
-- **Logs:** `docker-compose logs -f backend`
-
----
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Execute os testes: `npm run test:all`
-4. Faça commit das mudanças
-5. Abra um Pull Request
-
----
-
-## 📄 Licença
-
-Este projeto está sob licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
-
----
-
-**🎉 Projeto pronto para desenvolvimento e facilmente adaptável para novos projetos com IA!**

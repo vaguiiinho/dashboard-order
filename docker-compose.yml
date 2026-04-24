@@ -3,10 +3,8 @@ services:
   mysql:
     image: mysql:8.0
     container_name: dashboard_mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-dashboard_order_db}
-      MYSQL_ROOT_HOST: '%'
+    env_file:
+      - ./.env
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped
@@ -24,45 +22,42 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: vaguiiinho/dashboard-backend:1.0.0  
     container_name: dashboard_backend
     depends_on:
       mysql:
         condition: service_healthy
     env_file:
-      - ./backend/.env
+      - ./.env
     restart: unless-stopped
     networks:
       - dashboard_network
-    volumes:
-      - ./backend/prisma:/app/prisma
-    command: >
-      sh -c "npx prisma migrate deploy &&
-             node dist/main.js"
 
   # 🌐 Frontend Next.js
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: vaguiiinho/dashboard-frontend:1.0.0  
     container_name: dashboard_frontend
     depends_on:
       - backend
     env_file:
-      - ./frontend/.env
+      - ./.env
     restart: unless-stopped
     networks:
       - dashboard_network
 
   # 🔄 Nginx Reverse Proxy
   nginx:
-    image: nginx:alpine
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: vaguiiinho/dashboard-nginx:1.0.0
     container_name: dashboard_nginx
     ports:
-      - "${HTTP_PORT:-80}:80"
-      - "${HTTPS_PORT:-443}:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - "80:80"
+      - "443:443"
     depends_on:
       - backend
       - frontend

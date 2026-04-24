@@ -1,48 +1,27 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
-WORKDIR /app
-
-# Copiar arquivos de dependências
+# Copiar dependências
 COPY package*.json ./
-COPY prisma ./prisma/
+RUN npm install
 
-# Instalar dependências
-RUN npm ci
-
-# Copiar código fonte
+# Copiar código
 COPY . .
 
-# Gerar Prisma Client
+# Gerar prisma client
 RUN npx prisma generate
 
 # Build da aplicação
 RUN npm run build
 
-# Production stage
-FROM node:20-alpine
+# Copiar entrypoint
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
-WORKDIR /app
+ENTRYPOINT ["./entrypoint.sh"]
 
-# Copiar arquivos de dependências
-COPY package*.json ./
-COPY prisma ./prisma/
-
-# Instalar apenas dependências de produção
-RUN npm ci --only=production && npm cache clean --force
-
-# Gerar Prisma Client
-RUN npx prisma generate
-
-# Copiar build do estágio anterior
-COPY --from=builder /app/dist ./dist
-
-# Expor porta
-EXPOSE 3001
-
-# Healthcheck
+# Healthcheck (corrigido)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://backend:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Comando de inicialização
-CMD ["node", "dist/main.js"]
+EXPOSE 3001
